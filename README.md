@@ -1,2 +1,4 @@
 # pattern-generation
-Use this script to generate patterns in the form of JSON files which can be sent to microcontroller
+Use this script to generate patterns in the form of JSON files which can be sent to microcontroller.
+
+All instructions can be found in the provided notebook *patternGeneration.ipynb*.
