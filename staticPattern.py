@@ -45,8 +45,8 @@ def staticPattern(E, a, f, d, g_f, w):
 		#can be calculated from input
 		period = 1 / g_f
 		B = 2*np.pi*g_f
-		A = (max_amp - 0.5*max_amp)/2
-		D = max_amp - A
+		# A = (max_amp - 0.5*max_amp)/2
+		# D = max_amp - A
 
 		#for creating wave
 		start = 0
@@ -54,9 +54,10 @@ def staticPattern(E, a, f, d, g_f, w):
 		x = np.linspace(start, stop, discretization)
 
 		#create amplitude list
+		phi = 0
 		amplitude_list = []
 		for i in range(len(x)):
-			amplitude_list.append((int) (A*np.sin(B*(x[i])) + D))
+			amplitude_list.append((int) (max_amp*signal.sawtooth(B * (x[i] - phi)) + max_amp)/2)
 		for timestep in range(discretization):
 			for e in E:
 				array[timestep][e[0]][e[1]][0] = f
@@ -65,7 +66,7 @@ def staticPattern(E, a, f, d, g_f, w):
 
 max_amp = 250
 t = np.linspace(0, 1, 500)
-plt.plot(t, (max_amp*signal.sawtooth(2 * np.pi * 5 * t) + max_amp)/2)
+plt.plot(t, (max_amp*signal.sawtooth(2 * np.pi * t) + max_amp)/2)
 plt.show()
 
-print((max_amp*signal.sawtooth(2 * np.pi * 5 * t) + max_amp)/2)
+# print((max_amp*signal.sawtooth(2 * np.pi * 5 * t) + max_amp)/2)
