@@ -1,0 +1,71 @@
+import numpy as np
+from scipy import signal
+import matplotlib.pyplot as plt
+
+# type of E: 'set' which is a subset of (4,6), e in E, e[0] is '4', e[1] is '6'
+# type of D: duration in of the pattern (integer in ms)
+# type of G_f: frequency of wave type (integer)
+# type of W: string, denoting the wave type
+
+def staticPattern(E, a, f, d, g_f, w):
+
+	max_amp = 250
+	discretization = d // 10
+	array = np.zeros(size=(discretization,4,6,2)) #misschien handig een class te maken
+
+	if w == 'constant':
+		for timestep in range(discretization):
+			for e in E:
+				array[timestep][e[0]][e[1]][0] = f
+				array[timestep][e[0]][e[1]][1] = a
+
+	elif w == 'sin':
+		#can be calculated from input
+		period = 1 / g_f
+		B = 2*np.pi*g_f
+		A = (max_amp - 0.5*max_amp)/2
+		D = max_amp - A
+
+		#for creating wave
+		start = 0
+		stop = d
+		x = np.linspace(start, stop, discretization)
+
+		#create amplitude list
+		phi = 0
+		amplitude_list = []
+		for i in range(len(x)):
+			amplitude_list.append((int) (A*np.sin(B*(x[i] - phi)) + D))
+		for timestep in range(discretization):
+			for e in E:
+				array[timestep][e[0]][e[1]][0] = f
+				array[timestep][e[0]][e[1]][1] = amplitude_list[timestep]
+
+	elif w == 'sawtooth':
+		#can be calculated from input
+		period = 1 / g_f
+		B = 2*np.pi*g_f
+		A = (max_amp - 0.5*max_amp)/2
+		D = max_amp - A
+
+		#for creating wave
+		start = 0
+		stop = d
+		x = np.linspace(start, stop, discretization)
+
+		#create amplitude list
+		amplitude_list = []
+		for i in range(len(x)):
+			amplitude_list.append((int) (A*np.sin(B*(x[i])) + D))
+		for timestep in range(discretization):
+			for e in E:
+				array[timestep][e[0]][e[1]][0] = f
+				array[timestep][e[0]][e[1]][1] = amplitude_list[timestep]
+
+
+max_amp = 250
+t = np.linspace(0, 1, 500)
+plt.plot(t, (max_amp*signal.sawtooth(2 * np.pi * 5 * t) + max_amp)/2)
+plt.show()
+
+print((max_amp*signal.sawtooth(2 * np.pi * 5 * t) + max_amp)/2)
