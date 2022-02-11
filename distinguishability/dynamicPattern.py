@@ -1,8 +1,4 @@
-import numpy as np
-from scipy import signal
-import matplotlib.pyplot as plt
-
-from staticPattern import staticPattern
+from distinguishability.staticPattern import staticPattern
 
 # # type of E_j: 'set' which is a subset of (4,6), e in E, e[0] is '4', e[1] is '6'
 # P_j is for j=3: [P_1, P_2, P_3]
