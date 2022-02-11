@@ -9,16 +9,17 @@ import matplotlib.pyplot as plt
 
 def staticPattern(E, a, f, d, g_f, w):
 	"""
-	#TODO: add drawing
+	#TODO: add drawing somewhere
+
 	We say 'extra' is a parameter either a or f.
 	We say 'x' is from top view of the grid the x-coordinate
 	We say 'y' is from top view of the grid the y-coordinate
 
 	:param E: (array) subset of whole grid. E = E[e_1,e_2,...]. For each e in E: x=e[0], y=e[1]
-	:param a: (int) one of all amplitudes. a = a in A
-	:param f: (int) one of all frequencies. f = f in F
-	:param d: (int) one of all durations. d = d in D ()
-	:param g_f: (int) one of all group frequencies. g_f = g_f in G_f
+	:param a: (int: mm) one of all amplitudes. a = a in A
+	:param f: (int: Hz) one of all frequencies. f = f in F
+	:param d: (int: ms) one of all durations. d = d in D ()
+	:param g_f: (int) one of all group frequencies. g_f = g_f in G_f. Also known as 'modulation'
 	:param w: (str) one of all wave types. w = w in W
 	:return: array: (array) an array representing the pattern in video form. array = array[time][x][y][extra].
 			 note that array[][][][0] gives the frequency, and array[][][][1] gives the amplitude.
