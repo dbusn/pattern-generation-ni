@@ -15,7 +15,7 @@ def generate_random_gif(frames: int, width: int, height: int) -> ndarray:
 def save_frames_as_gif(frames: ndarray, output_dir: str, gif_name: str):
     """Saves a list of frames as a gif to the given output directory."""
 
-    frames_dir = path.join(output_dir, "frames")
+    frames_dir = path.join(output_dir, "frames", gif_name)
     
     # If the output dir does not exist, create it
     if not path.exists(frames_dir):
