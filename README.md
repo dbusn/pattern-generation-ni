@@ -17,3 +17,7 @@ The only dynamic pattern included so far is UU. However, it is possible to gener
 Once all the json files are in json/ you can run ```convert2GIF.bash``` script to output all the GIFs into a gifs/ subdirectory. You can also see each GIF frame-by-frame by navigating to frames/"name-of-the-phoneme".
 * **Windows:**
 The same procedure applies but execute ```convert2GIF.ps1``` using powershell instead of the bash script.
+
+### Distinguishability
+In the directory `./distinguishability` there are two python files: `staticPattern.py` and `dynamicPattern.py`.
+These two files create a numpy array representing a respectively static of dynamic pattern in a `time x 6 x 6 x 2` grid.
