@@ -19,4 +19,4 @@ The same procedure applies but execute ```convert2GIF.ps1``` using powershell in
 
 ### Distinguishability
 In the directory `./distinguishability` there are two python files: `staticPattern.py` and `dynamicPattern.py`.
-These two files create a numpy array representing a respectively static of dynamic pattern in a `time x 6 x 6 x 2` grid.
+These two files create a numpy array representing a respectively static of dynamic pattern in a `time x 6 x 6 x 2` grid. 
