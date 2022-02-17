@@ -1,7 +1,6 @@
 # pattern-generation-ni
-Generates patterns in the form of JSON files which can be sent to microcontroller.
-
-All instructions can be found in the provided notebook *patternGeneration.ipynb*.
+The notebook `patternGeneration.ipynb` generates patterns in the form of JSON files which can be sent to microcontroller.
+All instructions for this can be found in this notebook.
 
 ## Instruction on how to generate patterns:
 ### Prerequisites
