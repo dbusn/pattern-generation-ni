@@ -1,0 +1,1 @@
+Get-ChildItem -Filter *.json | ForEach-Object {python json2gif.py $_.Name }
