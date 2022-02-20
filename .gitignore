@@ -6,6 +6,16 @@ __pycache__/
 # C extensions
 *.so
 
+gifs/
+distinguishability/gifs/
+*.bak
+
+# vscode project settings
+.vscode/
+
+# Sublime Text workspace files
+*.sublime-workspace
+
 # Distribution / packaging
 .Python
 build/
