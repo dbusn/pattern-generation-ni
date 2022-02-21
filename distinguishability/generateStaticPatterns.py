@@ -1,5 +1,4 @@
 import sys
-import string
 from staticPattern import generateRandomPattern, generateGIF
 
 if __name__ == '__main__':
