@@ -1,3 +1,12 @@
+####### OUR OWN STUFF ########
+
+
+visil/
+ckpt/
+ckpt.zip
+
+######## STOLEN FROM INTERNET ########
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

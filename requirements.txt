@@ -1,3 +1,4 @@
 numpy==1.21.2
 moviepy==1.0.1
-scipy==1.7.3
+tensorflow-gpu==1.15
+wget==3.2
