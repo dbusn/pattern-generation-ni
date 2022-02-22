@@ -117,18 +117,20 @@ def staticPattern(E, a, f, d, g_f, w) -> list:
         for i in range(len(x)):
             if x[i] % 2*period < period: # if 0 <= x < period
                 sign = 1
+                amplitude_list.append((int) (a * sign))
             else:                         # period <= x < 2*period
                 sign = -1
                 amplitude_list.append((int) (a * sign))
-                for timestep in range(discretization):
-                    for e in E:
-                        array[timestep][e[0]-1][e[1]-1][0] = f
-                        array[timestep][e[0]-1][e[1]-1][1] = amplitude_list[timestep]
+        for timestep in range(discretization):
+            for e in E:
+                array[timestep][e[0]-1][e[1]-1][0] = f
+                array[timestep][e[0]-1][e[1]-1][1] = amplitude_list[timestep]
     else:
         print("error: wave type unknown")
         sys.exit(1)
 
     return array
+
 
 """
 :param name: (str) name of the pattern
@@ -149,7 +151,7 @@ def generateRandomPattern(
     grid_height: int = 6,
     actuators_no: tuple = (1, 8),
     amplitudes: list = [100, 255],
-    frequencies: list = [69],
+    frequencies: list = [300],
     modulations: list = [8],
     durations: list = [92, 392],
     waveforms: list = POSSIBLE_WAVEFORMS) -> tuple:
@@ -160,11 +162,12 @@ def generateRandomPattern(
     modulation = random.choice(modulations)
     duration = random.choice(durations)
     waveform = random.choice(waveforms)
-    waveform = waveform if waveform in POSSIBLE_WAVEFORMS else random.choice(POSSIBLE_WAVEFORMS)
+    waveform = random.choice(POSSIBLE_WAVEFORMS)
 
-    enabled_actuators = [(random.randint(1,grid_height), random.randint(1,grid_width)) for _ in range (actuators)]
+    enabled_actuators = [(random.randint(1,grid_width), random.randint(1,grid_height)) for _ in range (actuators)]
 
     return (name, staticPattern(enabled_actuators, amplitude, frequency, duration, modulation, waveform))
+
 
 """
 :param name: (str) name of the pattern
@@ -204,6 +207,7 @@ def generateGIF(
 
     save_frames_as_gif(frames_from_lists(grids), 'gifs', name)
 
+
 """Saves a list of frames as a gif to the given output directory."""
 def save_frames_as_gif(frames: np.ndarray, output_dir: str, gif_name: str, fps: int = 10) -> None:
 
@@ -215,9 +219,11 @@ def save_frames_as_gif(frames: np.ndarray, output_dir: str, gif_name: str, fps: 
     clip = moviepy.editor.ImageSequenceClip(list(frames), fps=fps)
     clip.write_gif(os.path.join(output_dir, gif_name +  ".gif"), fps=fps)
 
+
 def frames_from_lists(lists: list) -> np.ndarray:
     """Converts a list of arrays into a list of frames."""
     return [np.array(_list, dtype=np.uint8) for _list in lists]
+
 
 if __name__ == "__main__":
     iters = [iteration['iteration'] for iteration in json.loads(sys.argv[1])['pattern']]

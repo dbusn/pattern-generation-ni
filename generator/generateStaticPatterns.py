@@ -16,4 +16,4 @@ if __name__ == '__main__':
 	n_patterns = int(sys.argv[1])
 	for i in range(n_patterns):
 		p_name = 'p_' + str(i)
-		generateGIF(p_name, generateRandomPattern(p_name, min_actuators, max_actuators)[1])
+		generateGIF(p_name, generateRandomPattern(name=p_name)[1])
