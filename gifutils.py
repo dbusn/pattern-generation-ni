@@ -1,4 +1,4 @@
-import np, os, moviepy
+import np.ndarray, os, moviepy.editor
 """Saves a list of frames as a gif to the given output directory."""
 def save_frames_as_gif(frames: np.ndarray, output_dir: str, gif_name: str, fps: int = 10) -> None:
 
