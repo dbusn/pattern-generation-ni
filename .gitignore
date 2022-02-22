@@ -11,6 +11,12 @@ __pycache__/
 # vscode project settings
 .vscode/
 
+# Exclude the dataset directory
+distinguishability/gifs/
+
+# Do not keep the generated gifs
+*.gif
+
 # Sublime Text workspace files
 *.sublime-workspace
 
