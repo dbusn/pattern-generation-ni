@@ -3,3 +3,4 @@ moviepy==1.0.1
 tensorflow-gpu==1.15
 wget==3.2
 psutil==5.7.0
+scipy==1.7.3
