@@ -1,0 +1,174 @@
+{
+    "pattern": [
+        {
+            "iteration": [
+                {
+                    "coord": 16,
+                    "amplitude": 250,
+                    "frequency": 300
+                }
+            ],
+            "time": 27
+        },
+        {
+            "iteration": [
+                {
+                    "coord": 16,
+                    "amplitude": 0,
+                    "frequency": 300
+                }
+            ],
+            "time": 27
+        },
+        {
+            "iteration": [
+                {
+                    "coord": 16,
+                    "amplitude": 250,
+                    "frequency": 300
+                }
+            ],
+            "time": 27
+        },
+        {
+            "iteration": [
+                {
+                    "coord": 16,
+                    "amplitude": 0,
+                    "frequency": 300
+                }
+            ],
+            "time": 27
+        },
+        {
+            "iteration": [
+                {
+                    "coord": 16,
+                    "amplitude": 250,
+                    "frequency": 300
+                }
+            ],
+            "time": 27
+        },
+        {
+            "iteration": [
+                {
+                    "coord": 16,
+                    "amplitude": 0,
+                    "frequency": 300
+                }
+            ],
+            "time": 27
+        },
+        {
+            "iteration": [
+                {
+                    "coord": 14,
+                    "amplitude": 250,
+                    "frequency": 300
+                }
+            ],
+            "time": 27
+        },
+        {
+            "iteration": [
+                {
+                    "coord": 14,
+                    "amplitude": 0,
+                    "frequency": 300
+                }
+            ],
+            "time": 27
+        },
+        {
+            "iteration": [
+                {
+                    "coord": 14,
+                    "amplitude": 250,
+                    "frequency": 300
+                }
+            ],
+            "time": 27
+        },
+        {
+            "iteration": [
+                {
+                    "coord": 14,
+                    "amplitude": 0,
+                    "frequency": 300
+                }
+            ],
+            "time": 27
+        },
+        {
+            "iteration": [
+                {
+                    "coord": 14,
+                    "amplitude": 250,
+                    "frequency": 300
+                }
+            ],
+            "time": 27
+        },
+        {
+            "iteration": [
+                {
+                    "coord": 14,
+                    "amplitude": 0,
+                    "frequency": 300
+                }
+            ],
+            "time": 27
+        },
+        {
+            "iteration": [
+                {
+                    "coord": 12,
+                    "amplitude": 250,
+                    "frequency": 300
+                }
+            ],
+            "time": 27
+        },
+        {
+            "iteration": [
+                {
+                    "coord": 12,
+                    "amplitude": 0,
+                    "frequency": 300
+                }
+            ],
+            "time": 27
+        },
+        {
+            "iteration": [
+                {
+                    "coord": 12,
+                    "amplitude": 250,
+                    "frequency": 300
+                }
+            ],
+            "time": 27
+        },
+        {
+            "iteration": [
+                {
+                    "coord": 12,
+                    "amplitude": 0,
+                    "frequency": 300
+                }
+            ],
+            "time": 27
+        },
+        {
+            "iteration": [
+                {
+                    "coord": 12,
+                    "amplitude": 250,
+                    "frequency": 300
+                }
+            ],
+            "time": 27
+        }
+    ]
+}

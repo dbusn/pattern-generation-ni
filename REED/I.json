@@ -1,0 +1,1204 @@
+{
+  "pattern": [
+    {
+      "iteration": [
+        {
+          "coord": 13,
+          "amplitude": 187,
+          "frequency": 300
+        },
+        {
+          "coord": 14,
+          "amplitude": 187,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 13,
+          "amplitude": 246,
+          "frequency": 300
+        },
+        {
+          "coord": 14,
+          "amplitude": 246,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 13,
+          "amplitude": 224,
+          "frequency": 300
+        },
+        {
+          "coord": 14,
+          "amplitude": 224,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 13,
+          "amplitude": 150,
+          "frequency": 300
+        },
+        {
+          "coord": 14,
+          "amplitude": 150,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 13,
+          "amplitude": 128,
+          "frequency": 300
+        },
+        {
+          "coord": 14,
+          "amplitude": 128,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 13,
+          "amplitude": 187,
+          "frequency": 300
+        },
+        {
+          "coord": 14,
+          "amplitude": 187,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 13,
+          "amplitude": 246,
+          "frequency": 300
+        },
+        {
+          "coord": 14,
+          "amplitude": 246,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 13,
+          "amplitude": 224,
+          "frequency": 300
+        },
+        {
+          "coord": 14,
+          "amplitude": 224,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 13,
+          "amplitude": 150,
+          "frequency": 300
+        },
+        {
+          "coord": 14,
+          "amplitude": 150,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 13,
+          "amplitude": 128,
+          "frequency": 300
+        },
+        {
+          "coord": 14,
+          "amplitude": 128,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 23,
+          "amplitude": 128,
+          "frequency": 300
+        },
+        {
+          "coord": 24,
+          "amplitude": 128,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 23,
+          "amplitude": 187,
+          "frequency": 300
+        },
+        {
+          "coord": 24,
+          "amplitude": 187,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 23,
+          "amplitude": 246,
+          "frequency": 300
+        },
+        {
+          "coord": 24,
+          "amplitude": 246,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 23,
+          "amplitude": 224,
+          "frequency": 300
+        },
+        {
+          "coord": 24,
+          "amplitude": 224,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 23,
+          "amplitude": 150,
+          "frequency": 300
+        },
+        {
+          "coord": 24,
+          "amplitude": 150,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 23,
+          "amplitude": 128,
+          "frequency": 300
+        },
+        {
+          "coord": 24,
+          "amplitude": 128,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 23,
+          "amplitude": 187,
+          "frequency": 300
+        },
+        {
+          "coord": 24,
+          "amplitude": 187,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 23,
+          "amplitude": 246,
+          "frequency": 300
+        },
+        {
+          "coord": 24,
+          "amplitude": 246,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 23,
+          "amplitude": 224,
+          "frequency": 300
+        },
+        {
+          "coord": 24,
+          "amplitude": 224,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 23,
+          "amplitude": 150,
+          "frequency": 300
+        },
+        {
+          "coord": 24,
+          "amplitude": 150,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 33,
+          "amplitude": 150,
+          "frequency": 300
+        },
+        {
+          "coord": 34,
+          "amplitude": 150,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 33,
+          "amplitude": 128,
+          "frequency": 300
+        },
+        {
+          "coord": 34,
+          "amplitude": 128,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 33,
+          "amplitude": 187,
+          "frequency": 300
+        },
+        {
+          "coord": 34,
+          "amplitude": 187,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 33,
+          "amplitude": 246,
+          "frequency": 300
+        },
+        {
+          "coord": 34,
+          "amplitude": 246,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 33,
+          "amplitude": 224,
+          "frequency": 300
+        },
+        {
+          "coord": 34,
+          "amplitude": 224,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 33,
+          "amplitude": 150,
+          "frequency": 300
+        },
+        {
+          "coord": 34,
+          "amplitude": 150,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 33,
+          "amplitude": 128,
+          "frequency": 300
+        },
+        {
+          "coord": 34,
+          "amplitude": 128,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 33,
+          "amplitude": 187,
+          "frequency": 300
+        },
+        {
+          "coord": 34,
+          "amplitude": 187,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 33,
+          "amplitude": 246,
+          "frequency": 300
+        },
+        {
+          "coord": 34,
+          "amplitude": 246,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 33,
+          "amplitude": 224,
+          "frequency": 300
+        },
+        {
+          "coord": 34,
+          "amplitude": 224,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 43,
+          "amplitude": 224,
+          "frequency": 300
+        },
+        {
+          "coord": 44,
+          "amplitude": 224,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 43,
+          "amplitude": 150,
+          "frequency": 300
+        },
+        {
+          "coord": 44,
+          "amplitude": 150,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 43,
+          "amplitude": 128,
+          "frequency": 300
+        },
+        {
+          "coord": 44,
+          "amplitude": 128,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 43,
+          "amplitude": 187,
+          "frequency": 300
+        },
+        {
+          "coord": 44,
+          "amplitude": 187,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 43,
+          "amplitude": 246,
+          "frequency": 300
+        },
+        {
+          "coord": 44,
+          "amplitude": 246,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 43,
+          "amplitude": 224,
+          "frequency": 300
+        },
+        {
+          "coord": 44,
+          "amplitude": 224,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 43,
+          "amplitude": 150,
+          "frequency": 300
+        },
+        {
+          "coord": 44,
+          "amplitude": 150,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 43,
+          "amplitude": 128,
+          "frequency": 300
+        },
+        {
+          "coord": 44,
+          "amplitude": 128,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 43,
+          "amplitude": 187,
+          "frequency": 300
+        },
+        {
+          "coord": 44,
+          "amplitude": 187,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 43,
+          "amplitude": 246,
+          "frequency": 300
+        },
+        {
+          "coord": 44,
+          "amplitude": 246,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 41,
+          "amplitude": 246,
+          "frequency": 300
+        },
+        {
+          "coord": 42,
+          "amplitude": 246,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 41,
+          "amplitude": 224,
+          "frequency": 300
+        },
+        {
+          "coord": 42,
+          "amplitude": 224,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 41,
+          "amplitude": 150,
+          "frequency": 300
+        },
+        {
+          "coord": 42,
+          "amplitude": 150,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 41,
+          "amplitude": 128,
+          "frequency": 300
+        },
+        {
+          "coord": 42,
+          "amplitude": 128,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 41,
+          "amplitude": 187,
+          "frequency": 300
+        },
+        {
+          "coord": 42,
+          "amplitude": 187,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 41,
+          "amplitude": 246,
+          "frequency": 300
+        },
+        {
+          "coord": 42,
+          "amplitude": 246,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 41,
+          "amplitude": 224,
+          "frequency": 300
+        },
+        {
+          "coord": 42,
+          "amplitude": 224,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 41,
+          "amplitude": 150,
+          "frequency": 300
+        },
+        {
+          "coord": 42,
+          "amplitude": 150,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 41,
+          "amplitude": 128,
+          "frequency": 300
+        },
+        {
+          "coord": 42,
+          "amplitude": 128,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 41,
+          "amplitude": 187,
+          "frequency": 300
+        },
+        {
+          "coord": 42,
+          "amplitude": 187,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 31,
+          "amplitude": 187,
+          "frequency": 300
+        },
+        {
+          "coord": 32,
+          "amplitude": 187,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 31,
+          "amplitude": 246,
+          "frequency": 300
+        },
+        {
+          "coord": 32,
+          "amplitude": 246,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 31,
+          "amplitude": 224,
+          "frequency": 300
+        },
+        {
+          "coord": 32,
+          "amplitude": 224,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 31,
+          "amplitude": 150,
+          "frequency": 300
+        },
+        {
+          "coord": 32,
+          "amplitude": 150,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 31,
+          "amplitude": 128,
+          "frequency": 300
+        },
+        {
+          "coord": 32,
+          "amplitude": 128,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 31,
+          "amplitude": 187,
+          "frequency": 300
+        },
+        {
+          "coord": 32,
+          "amplitude": 187,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 31,
+          "amplitude": 246,
+          "frequency": 300
+        },
+        {
+          "coord": 32,
+          "amplitude": 246,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 31,
+          "amplitude": 224,
+          "frequency": 300
+        },
+        {
+          "coord": 32,
+          "amplitude": 224,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 31,
+          "amplitude": 150,
+          "frequency": 300
+        },
+        {
+          "coord": 32,
+          "amplitude": 150,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 31,
+          "amplitude": 128,
+          "frequency": 300
+        },
+        {
+          "coord": 32,
+          "amplitude": 128,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 21,
+          "amplitude": 128,
+          "frequency": 300
+        },
+        {
+          "coord": 22,
+          "amplitude": 128,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 21,
+          "amplitude": 187,
+          "frequency": 300
+        },
+        {
+          "coord": 22,
+          "amplitude": 187,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 21,
+          "amplitude": 246,
+          "frequency": 300
+        },
+        {
+          "coord": 22,
+          "amplitude": 246,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 21,
+          "amplitude": 224,
+          "frequency": 300
+        },
+        {
+          "coord": 22,
+          "amplitude": 224,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 21,
+          "amplitude": 150,
+          "frequency": 300
+        },
+        {
+          "coord": 22,
+          "amplitude": 150,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 21,
+          "amplitude": 128,
+          "frequency": 300
+        },
+        {
+          "coord": 22,
+          "amplitude": 128,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 21,
+          "amplitude": 187,
+          "frequency": 300
+        },
+        {
+          "coord": 22,
+          "amplitude": 187,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 21,
+          "amplitude": 246,
+          "frequency": 300
+        },
+        {
+          "coord": 22,
+          "amplitude": 246,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 21,
+          "amplitude": 224,
+          "frequency": 300
+        },
+        {
+          "coord": 22,
+          "amplitude": 224,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 21,
+          "amplitude": 150,
+          "frequency": 300
+        },
+        {
+          "coord": 22,
+          "amplitude": 150,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 11,
+          "amplitude": 150,
+          "frequency": 300
+        },
+        {
+          "coord": 12,
+          "amplitude": 150,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 11,
+          "amplitude": 128,
+          "frequency": 300
+        },
+        {
+          "coord": 12,
+          "amplitude": 128,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 11,
+          "amplitude": 187,
+          "frequency": 300
+        },
+        {
+          "coord": 12,
+          "amplitude": 187,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 11,
+          "amplitude": 246,
+          "frequency": 300
+        },
+        {
+          "coord": 12,
+          "amplitude": 246,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 11,
+          "amplitude": 224,
+          "frequency": 300
+        },
+        {
+          "coord": 12,
+          "amplitude": 224,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 11,
+          "amplitude": 150,
+          "frequency": 300
+        },
+        {
+          "coord": 12,
+          "amplitude": 150,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 11,
+          "amplitude": 128,
+          "frequency": 300
+        },
+        {
+          "coord": 12,
+          "amplitude": 128,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 11,
+          "amplitude": 187,
+          "frequency": 300
+        },
+        {
+          "coord": 12,
+          "amplitude": 187,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 11,
+          "amplitude": 246,
+          "frequency": 300
+        },
+        {
+          "coord": 12,
+          "amplitude": 246,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    },
+    {
+      "iteration": [
+        {
+          "coord": 11,
+          "amplitude": 224,
+          "frequency": 300
+        },
+        {
+          "coord": 12,
+          "amplitude": 224,
+          "frequency": 300
+        }
+      ],
+      "time": 0
+    }
+  ]
+}

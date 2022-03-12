@@ -1,0 +1,64 @@
+{
+    "pattern": [
+        {
+            "iteration": [
+                {
+                    "coord": 11,
+                    "amplitude": 250,
+                    "frequency": 300
+                },
+                {
+                    "coord": 21,
+                    "amplitude": 250,
+                    "frequency": 300
+                },
+                {
+                    "coord": 31,
+                    "amplitude": 250,
+                    "frequency": 300
+                },
+                {
+                    "coord": 41,
+                    "amplitude": 250,
+                    "frequency": 300
+                }
+            ],
+            "time": 96
+        },
+        {
+            "iteration": [
+                {
+                    "coord": 41,
+                    "amplitude": 0,
+                    "frequency": 300
+                }
+            ],
+            "time": 48
+        },
+        {
+            "iteration": [
+                {
+                    "coord": 14,
+                    "amplitude": 250,
+                    "frequency": 300
+                },
+                {
+                    "coord": 24,
+                    "amplitude": 250,
+                    "frequency": 300
+                },
+                {
+                    "coord": 34,
+                    "amplitude": 250,
+                    "frequency": 300
+                },
+                {
+                    "coord": 44,
+                    "amplitude": 250,
+                    "frequency": 300
+                }
+            ],
+            "time": 96
+        }
+    ]
+}
