@@ -1,123 +1,98 @@
 {
-    "pattern": [
-        {
-            "iteration": [
-                {
-                    "coord": 13,
-                    "amplitude": 250,
-                    "frequency": 300
-                }
-            ],
+    "pattern": [{
+            "iteration": [{
+                "coord": 13,
+                "amplitude": 250,
+                "frequency": 300
+            }],
             "time": 40
         },
         {
-            "iteration": [
-                {
-                    "coord": 23,
-                    "amplitude": 250,
-                    "frequency": 300
-                }
-            ],
+            "iteration": [{
+                "coord": 23,
+                "amplitude": 250,
+                "frequency": 300
+            }],
             "time": 40
         },
         {
-            "iteration": [
-                {
-                    "coord": 22,
-                    "amplitude": 250,
-                    "frequency": 300
-                }
-            ],
+            "iteration": [{
+                "coord": 22,
+                "amplitude": 250,
+                "frequency": 300
+            }],
             "time": 40
         },
         {
-            "iteration": [
-                {
-                    "coord": 21,
-                    "amplitude": 250,
-                    "frequency": 300
-                }
-            ],
+            "iteration": [{
+                "coord": 21,
+                "amplitude": 250,
+                "frequency": 300
+            }],
             "time": 40
         },
         {
-            "iteration": [
-                {
-                    "coord": 11,
-                    "amplitude": 250,
-                    "frequency": 300
-                }
-            ],
+            "iteration": [{
+                "coord": 11,
+                "amplitude": 250,
+                "frequency": 300
+            }],
             "time": 40
         },
         {
-            "iteration": [
-                {
-                    "coord": 12,
-                    "amplitude": 250,
-                    "frequency": 300
-                }
-            ],
+            "iteration": [{
+                "coord": 12,
+                "amplitude": 250,
+                "frequency": 300
+            }],
             "time": 40
         },
         {
-            "iteration": [
-                {
-                    "coord": 13,
-                    "amplitude": 250,
-                    "frequency": 300
-                }
-            ],
+            "iteration": [{
+                "coord": 13,
+                "amplitude": 250,
+                "frequency": 300
+            }],
             "time": 40
         },
         {
-            "iteration": [
-                {
-                    "coord": 23,
-                    "amplitude": 250,
-                    "frequency": 300
-                }
-            ],
+            "iteration": [{
+                "coord": 23,
+                "amplitude": 250,
+                "frequency": 300
+            }],
             "time": 40
         },
         {
-            "iteration": [
-                {
-                    "coord": 22,
-                    "amplitude": 250,
-                    "frequency": 300
-                }
-            ],
+            "iteration": [{
+                "coord": 22,
+                "amplitude": 250,
+                "frequency": 300
+            }],
             "time": 40
         },
         {
-            "iteration": [
-                {
-                    "coord": 21,
-                    "amplitude": 250,
-                    "frequency": 300
-                }
-            ],
+            "iteration": [{
+                "coord": 21,
+                "amplitude": 250,
+                "frequency": 300
+            }],
             "time": 40
         },
         {
-            "iteration": [
-                {
-                    "coord": 11,
-                    "amplitude": 250,
-                    "frequency": 300
-                }
-            ],
+            "iteration": [{
+                "coord": 11,
+                "amplitude": 250,
+                "frequency": 300
+            }],
             "time": 40
         },
         {
-            "iteration": [
-                {
-                    "coord": 12,
-                    "amplitude": 250,
-                    "frequency": 300
-                }
-            ],
+            "iteration": [{
+                "coord": 12,
+                "amplitude": 250,
+                "frequency": 300
+            }],
             "time": 40
         }
     ]
