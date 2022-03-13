@@ -1,11 +1,12 @@
 # Functions to create patterns for phonemes
 # Most patterns implemented as example are taken from [A Phonemic-Based Tactile Display for Speech Communication](https://ieeexplore.ieee.org/abstract/document/8423203) by Reed et al.
 
-# imports
+# Imports
 import json
 import random
-import numpy as np
+
 import matplotlib.pyplot as plt
+import numpy as np
 from numpy.fft import fft, fftshift
 
 # With spacing $L/N$, we have the Hann window (also known as $\cos^2$ window):
@@ -266,7 +267,15 @@ def plot_sinus(total_time, modulation, fraction, phi, dis):
 
 
 def sin_modulation(
-    total_time, modulation, fraction, phi, dis, coord_list, pho_freq, dynamic
+    total_time: int,
+    modulation: int,
+    fraction: float,
+    phi: float,
+    dis: int,
+    coord_list: list,
+    pho_freq: int,
+    dynamic: bool,
+    pathLike: bool,
 ):
     """
     total_time: total time of sinus in ms, e.g. 392
@@ -277,6 +286,7 @@ def sin_modulation(
     coord_list: list of coordinates, e.g. [12, 13, 14, 15]
     pho_freq: frequency of phoneme, e.g. 300
     dynamic: generate siple or dynamic pattern
+    pathLike: generate pathLike or completely random pattern
 
     returns: makes a plot of how the sinus looks like
     """
@@ -289,6 +299,8 @@ def sin_modulation(
 
     # known
     max_amp = 250
+
+    motors = []
 
     # can be calculated from input
     period = 1 / modulation
@@ -315,12 +327,14 @@ def sin_modulation(
             "amplitude": amplitude_list[i],
             "frequency": pho_freq,
         }
+        motors.append(motor)
         if len(coord_list) == 2:
             motor2 = {
                 "coord": coord_list[1],
                 "amplitude": amplitude_list[i],
                 "frequency": pho_freq,
             }
+            motors.append(motor2)
         if len(coord_list) == 3:
             motor2 = {
                 "coord": coord_list[1],
@@ -332,6 +346,8 @@ def sin_modulation(
                 "amplitude": amplitude_list[i],
                 "frequency": pho_freq,
             }
+            motors.append(motor2)
+            motors.append(motor3)
         if len(coord_list) == 4:
             motor2 = {
                 "coord": coord_list[1],
@@ -348,6 +364,9 @@ def sin_modulation(
                 "amplitude": amplitude_list[i],
                 "frequency": pho_freq,
             }
+            motors.append(motor2)
+            motors.append(motor3)
+            motors.append(motor4)
         if len(coord_list) == 8:
             motor2 = {
                 "coord": coord_list[1],
@@ -384,25 +403,29 @@ def sin_modulation(
                 "amplitude": amplitude_list[i],
                 "frequency": pho_freq,
             }
-        iteration["iteration"].append(motor)
-        if len(coord_list) == 2:
-            iteration["iteration"].append(motor2)
-        if len(coord_list) == 3:
-            iteration["iteration"].append(motor2)
-            iteration["iteration"].append(motor3)
-        if len(coord_list) == 4:
-            iteration["iteration"].append(motor2)
-            iteration["iteration"].append(motor3)
-            iteration["iteration"].append(motor4)
-        if len(coord_list) == 8:
-            iteration["iteration"].append(motor2)
-            iteration["iteration"].append(motor3)
-            iteration["iteration"].append(motor4)
-            iteration["iteration"].append(motor5)
-            iteration["iteration"].append(motor6)
-            iteration["iteration"].append(motor7)
-            iteration["iteration"].append(motor8)
-        data.append(iteration)
+            motors.append(motor2)
+            motors.append(motor3)
+            motors.append(motor4)
+            motors.append(motor5)
+            motors.append(motor6)
+            motors.append(motor7)
+            motors.append(motor8)
+
+        if pathLike is True:
+            for i in range(len(coord_list)):
+                iteration = {"iteration": [], "time": 10}
+                motor = {
+                    "coord": coord_list[i],
+                    "amplitude": random.choice(amplitude_list),
+                    "frequency": pho_freq,
+                }
+                # print(motor)
+                iteration["iteration"].append(motor)
+                data.append(iteration)
+        else:
+            for active_motor in motors:
+                iteration["iteration"].append(active_motor)
+            data.append(iteration)
 
     return data
 
@@ -429,31 +452,81 @@ def create_simple_sin_modulation(
     with open(phoneme + ".json", "w") as f:
         json.dump(json_pattern, f)
 
-def create_dynamic_pattern() -> list:
+
+def create_dynamic_pattern(pathPattern: bool) -> list:
     modulation: int = 60
     total_time: int = random.choice(seq=[50, 60, 70, 80])
     fraction: float = 0.5
     phase_change: int = random.choice(seq=[0, 0.2, 0.4, 0.6, 0.8]) * (1 / modulation)
     discretization_rate: int = 6
-    actuators_no: int = random.randint(2,8)
+    actuators_no: int = random.choice(seq=[2, 3, 4, 8])
     grid_height: int = 6
     grid_width: int = 4
     frequency: int = random.choice(seq=[300])
     patterns_no = 8
-
+    coord_list = []
     all_waves = []
 
-    for _ in range(patterns_no):
-        coord_list = [(random.randint(1,grid_width), random.randint(1,grid_height)) for _ in range (actuators_no)]
-        all_waves += sin_modulation(total_time, modulation, fraction, phase_change, discretization_rate, coord_list, frequency, True)
-    
+    if pathPattern is True:
+        if len(coord_list) == 0:
+            coord_list = [
+                (random.randint(1, grid_width), random.randint(1, grid_height))
+            ]
+
+        # Select which actuators are active
+        # actuators_no = number of active actuators
+        for _ in range(actuators_no):
+            last_w = coord_list[-1:][0][0]
+            last_h = coord_list[-1:][0][1]
+
+            # print("H:" + str(last_h) + " W:" + str(last_w))
+
+            if last_h == grid_height:
+                # new_h = random.choice([random.randint(last_h - 1, last_h), 1])
+                new_h = random.randint(last_h - 1, last_h)
+            elif last_h == 1:
+                # new_h = random.choice([random.randint(last_h, last_h + 1), 6])
+                new_h = random.randint(last_h, last_h+1)
+
+            else:
+                new_h = random.randint(last_h - 1, last_h + 1)
+
+            if last_w == grid_width:
+                # new_w = random.choice([random.randint(last_w - 1, last_w), 1])
+                new_w = random.randint(last_w-1, last_w)
+            elif last_w == 1:
+                # new_w = random.choice([random.randint(last_w, last_w + 1), 4])
+                new_w = random.randint(last_w, last_w+1)
+            else:
+                new_w = random.randint(last_w - 1, last_w + 1)
+
+            coord_list.append((new_w, new_h))
+    else:
+        for _ in range(patterns_no):
+            coord_list = [
+                (random.randint(1, grid_width), random.randint(1, grid_height))
+                for _ in range(actuators_no)
+            ]
+
+    all_waves += sin_modulation(
+        total_time,
+        modulation,
+        fraction,
+        phase_change,
+        discretization_rate,
+        coord_list,
+        frequency,
+        dynamic=True,
+        pathLike=pathPattern,
+    )
+
     return all_waves
 
 
 if __name__ == "__main__":
-    n_gifs = 100
+    n_gifs = 10
     for i in range(n_gifs):
-        all_waves = create_dynamic_pattern()
+        all_waves = create_dynamic_pattern(pathPattern=True)
         json_pattern = {"pattern": all_waves}
         with open("p_" + str(i) + ".json", "w") as f:
             json.dump(json_pattern, f)
