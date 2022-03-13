@@ -2,11 +2,13 @@
 # Most patterns implemented as example are taken from [A Phonemic-Based Tactile Display for Speech Communication](https://ieeexplore.ieee.org/abstract/document/8423203) by Reed et al.
 
 # Imports
+from ast import arg
 import json
 import random
 
 import matplotlib.pyplot as plt
 import numpy as np
+import argparse
 from numpy.fft import fft, fftshift
 
 # With spacing $L/N$, we have the Hann window (also known as $\cos^2$ window):
@@ -423,7 +425,8 @@ def sin_modulation(
                 iteration["iteration"].append(motor)
                 data.append(iteration)
         else:
-            for active_motor in motors:
+            active_motors = random.choices(motors, k=random.randint(1, len(motors)))
+            for active_motor in active_motors:
                 iteration["iteration"].append(active_motor)
             data.append(iteration)
 
@@ -524,9 +527,17 @@ def create_dynamic_pattern(pathPattern: bool) -> list:
 
 
 if __name__ == "__main__":
-    n_gifs = 10
+    parser = argparse.ArgumentParser(description="Generate dynamic patterns")
+    parser.add_argument('-n', type=int, nargs='?', help='number of patterns to generate', required=True)
+    parser.add_argument('--pathLike', default=False, action='store_true', help='whether to generate pathLike patterns', required=False)
+
+    args = parser.parse_args()
+
+
+    n_gifs = args.n
+    pathPattern = args.pathLike
     for i in range(n_gifs):
-        all_waves = create_dynamic_pattern(pathPattern=True)
+        all_waves = create_dynamic_pattern(pathPattern)
         json_pattern = {"pattern": all_waves}
         with open("p_" + str(i) + ".json", "w") as f:
             json.dump(json_pattern, f)
