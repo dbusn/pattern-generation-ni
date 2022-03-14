@@ -5,6 +5,7 @@ import gifutils
 import argparse
 import json
 import random
+from gen_config import *
 
 def sin_modulation(
     total_time: int,
@@ -14,7 +15,6 @@ def sin_modulation(
     dis: int,
     coord_list: list,
     pho_freq: int,
-    dynamic: bool,
     pathLike: bool,
 ):
     """
@@ -32,10 +32,7 @@ def sin_modulation(
     """
 
     # From input
-    if dynamic is True:
-        time = total_time / 1000
-    else:
-        time = total_time
+    time = total_time / 1000
 
     # Known
     max_amp = 250
@@ -63,11 +60,7 @@ def sin_modulation(
 
         for coords in coord_list:
             motors.append(
-                {
-                    "coord": coords,
-                    "amplitude": amplitude_list[i],
-                    "frequency": pho_freq
-                }
+                {"coord": coords, "amplitude": amplitude_list[i], "frequency": pho_freq}
             )
 
         if pathLike is True:
@@ -113,16 +106,6 @@ def create_simple_sin_modulation(
 
 
 def create_dynamic_pattern(pathPattern: bool) -> list:
-    modulation: int = 60
-    total_time: int = random.choice(seq=[50, 60, 70, 80])
-    fraction: float = 0.5
-    phase_change: int = random.choice(seq=[0, 0.2, 0.4, 0.6, 0.8]) * (1 / modulation)
-    discretization_rate: int = 6
-    actuators_no: int = random.choice(seq=[2, 3, 4, 8])
-    grid_height: int = 6
-    grid_width: int = 4
-    frequency: int = random.choice(seq=[300])
-    patterns_no = 8
     coord_list = []
     all_waves = []
 
@@ -175,14 +158,35 @@ def create_dynamic_pattern(pathPattern: bool) -> list:
         discretization_rate,
         coord_list,
         frequency,
-        dynamic=True,
         pathLike=pathPattern,
     )
 
     return all_waves
 
 
-if __name__ == "__main__":
+def create_static_pattern():
+    coord_list = []
+    all_waves = []
+
+    coord_list = [
+        (random.randint(1, grid_width), random.randint(1, grid_height))
+        for _ in range(actuators_no)
+    ]
+
+    all_waves = sin_modulation(
+        total_time,
+        modulation,
+        fraction,
+        phase_change,
+        discretization_rate,
+        coord_list,
+        frequency,
+        pathLike=False,
+    )
+
+    return all_waves
+
+def initArgsParser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Generate dynamic patterns")
     parser.add_argument(
         "-n", type=int, nargs="?", help="number of patterns to generate", required=True
@@ -202,17 +206,37 @@ if __name__ == "__main__":
         required=False,
     )
 
+    parser.add_argument(
+        "--static",
+        default=False,
+        action="store_true",
+        help="generate static patterns",
+        required=False
+    )
+
+    return parser
+
+if __name__ == "__main__":
+    
+    parser = initArgsParser()
     args = parser.parse_args()
+
+    if(args.pathLike is True and args.static is True):
+        print('Static patterns cannot be path-like. Generating static patterns...')
 
     pathPattern = args.pathLike
     for n in range(args.n):
-        all_waves = create_dynamic_pattern(pathPattern)
+        if args.static is True:
+            all_waves = create_static_pattern()
+        else:
+            all_waves = create_dynamic_pattern(pathPattern)
+
         json_pattern = {"pattern": all_waves}
         with open("p_" + str(n) + ".json", "w") as f:
             json.dump(json_pattern, f)
 
         if args.jsonOnly is False:
-            with open("p_" + str(n) + '.json', "r") as f:
+            with open("p_" + str(n) + ".json", "r") as f:
                 json_pattern = json.load(f)
 
             iters = [iteration["iteration"] for iteration in json_pattern["pattern"]]
