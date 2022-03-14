@@ -6,6 +6,8 @@ ckpt/
 ckpt.zip
 gifs/*.gif
 !/REED/gifs/*.gif
+generator/*.gif
+
 
 # Editors
 .vscode/

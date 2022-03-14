@@ -1,0 +1,29 @@
+{
+    "pattern": [
+        {
+            "iteration": [
+                {
+                    "coord": 11,
+                    "amplitude": 255,
+                    "frequency": 300
+                },
+                {
+                    "coord": 12,
+                    "amplitude": 255,
+                    "frequency": 300
+                },
+                {
+                    "coord": 21,
+                    "amplitude": 255,
+                    "frequency": 300
+                },
+                {
+                    "coord": 22,
+                    "amplitude": 255,
+                    "frequency": 300
+                }
+            ],
+            "time": 92
+        }
+    ]
+}
