@@ -2,7 +2,6 @@
 # Most patterns implemented as example are taken from [A Phonemic-Based Tactile Display for Speech Communication](https://ieeexplore.ieee.org/abstract/document/8423203) by Reed et al.
 
 # Imports
-import matplotlib.pyplot as plt
 import numpy as np
 import gifutils
 import argparse
@@ -257,14 +256,6 @@ def plot_sinus(total_time, modulation, fraction, phi, dis):
     amplitude_list = []
     for i in range(len(x)):
         amplitude_list.append(A * np.sin(B * (x[i] - phi)) + D)
-
-    # plotting
-    plt.plot(x, A * np.sin(B * (x - phi)) + D)
-    plt.title("wave")
-    plt.xlabel("time(s)")
-    plt.ylabel("amplitude")
-    plt.show()
-
 
 def sin_modulation(
     total_time: int,
