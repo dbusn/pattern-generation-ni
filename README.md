@@ -9,7 +9,7 @@ In the `pattern-gen.ipynb` notebook all the code is stored, including setup code
 ### Dynamic pattern generation
 Proceed to dynamicGeneration directory and run ```python dynamicGenerator.py -h``` to learn how to generate dynamic patterns.
 
-#### Conversion to GIF
+### Conversion to GIF
 If you have JSON pattern files generated using an external tool, you may want to convert them to gif files. To do so:
 * **MacOS/Linux**:
 Once all the json files are in json/  run ```convert2GIF.bash``` script to output all the GIFs into a GIFS/ subdirectory.
