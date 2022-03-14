@@ -7,6 +7,7 @@ import json
 import random
 import scipy
 import config
+import scipy.signal
 
 
 def process_amplitude_list(amplitude_list, coord_list, pho_freq, pathLike, static):
@@ -34,27 +35,25 @@ def process_amplitude_list(amplitude_list, coord_list, pho_freq, pathLike, stati
                     "frequency": pho_freq,
                 }
                 iteration["iteration"].append(motor)
-                data.append(iteration)
         else:
             if static is True:
                 motors = []
-                for i in range(len(coord_list)):
+                for j in range(len(coord_list)):
                     motors.append({
-                        "coord": coord_list[i],
+                        "coord": coord_list[j],
                         "amplitude": random.choice(amplitude_list),
                         "frequency": pho_freq,
                     })
 
                 for active_motor in motors:
                     iteration["iteration"].append(active_motor)
-                data.append(iteration)
             # Regular dynamic pattern
             else:
                 # Choose k random motors that are active in an iteration
                 active_motors = random.choices(motors, k=random.randint(1, len(motors)))
                 for active_motor in active_motors:
                     iteration["iteration"].append(active_motor)
-                data.append(iteration)
+        data.append(iteration)        
 
     return data
 
@@ -180,7 +179,6 @@ def sin_modulation(
     """
 
     # Can be calculated from input
-    period = 1 / modulation
     B = 2 * np.pi * modulation
     A = (config.max_amp - fraction * config.max_amp) / 2
     D = config.max_amp - A
@@ -303,7 +301,7 @@ def create_dynamic_pattern(pathPattern: bool, waveform: str) -> list:
 
     return all_waves
 
-# TODO Make it obsolete
+# TODO Make it obsolete by merging dynami and static pattern functions
 def create_static_pattern(waveform: str):
     coord_list = []
     all_waves = []
