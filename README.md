@@ -6,7 +6,7 @@ Make sure that all the packages listed in `requirements.txt` are installed. To d
 ### Notebook
 In the `pattern-gen.ipynb` notebook all the code is stored, including setup code. You can simply run that for most applications.
 
-### Dynamic pattern generation
+### Pattern generation
 Proceed to dynamicGeneration directory and run ```python dynamicGenerator.py -h``` to learn how to generate dynamic patterns.
 
 ### Conversion to GIF
