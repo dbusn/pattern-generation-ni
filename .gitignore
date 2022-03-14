@@ -8,6 +8,7 @@ gifs/*.gif
 !/REED/gifs/*.gif
 generator/*.gif
 
+
 # Editors
 .vscode/
 *.sublime-workspace

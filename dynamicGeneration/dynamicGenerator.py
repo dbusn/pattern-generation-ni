@@ -2,14 +2,12 @@
 # Most patterns implemented as example are taken from [A Phonemic-Based Tactile Display for Speech Communication](https://ieeexplore.ieee.org/abstract/document/8423203) by Reed et al.
 
 # Imports
-from ast import arg
-import json
-import random
-
 import matplotlib.pyplot as plt
 import numpy as np
+import gifutils
 import argparse
-from numpy.fft import fft, fftshift
+import json
+import random
 
 # With spacing $L/N$, we have the Hann window (also known as $\cos^2$ window):
 #
@@ -489,17 +487,17 @@ def create_dynamic_pattern(pathPattern: bool) -> list:
                 new_h = random.randint(last_h - 1, last_h)
             elif last_h == 1:
                 # new_h = random.choice([random.randint(last_h, last_h + 1), 6])
-                new_h = random.randint(last_h, last_h+1)
+                new_h = random.randint(last_h, last_h + 1)
 
             else:
                 new_h = random.randint(last_h - 1, last_h + 1)
 
             if last_w == grid_width:
                 # new_w = random.choice([random.randint(last_w - 1, last_w), 1])
-                new_w = random.randint(last_w-1, last_w)
+                new_w = random.randint(last_w - 1, last_w)
             elif last_w == 1:
                 # new_w = random.choice([random.randint(last_w, last_w + 1), 4])
-                new_w = random.randint(last_w, last_w+1)
+                new_w = random.randint(last_w, last_w + 1)
             else:
                 new_w = random.randint(last_w - 1, last_w + 1)
 
@@ -528,16 +526,54 @@ def create_dynamic_pattern(pathPattern: bool) -> list:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate dynamic patterns")
-    parser.add_argument('-n', type=int, nargs='?', help='number of patterns to generate', required=True)
-    parser.add_argument('--pathLike', default=False, action='store_true', help='whether to generate pathLike patterns', required=False)
+    parser.add_argument(
+        "-n", type=int, nargs="?", help="number of patterns to generate", required=True
+    )
+    parser.add_argument(
+        "--pathLike",
+        default=False,
+        action="store_true",
+        help="generate path-like patterns",
+        required=False,
+    )
+    parser.add_argument(
+        "--jsonOnly",
+        default=False,
+        action="store_true",
+        help="generate only json files",
+        required=False,
+    )
 
     args = parser.parse_args()
 
-
-    n_gifs = args.n
     pathPattern = args.pathLike
-    for i in range(n_gifs):
+    for n in range(args.n):
         all_waves = create_dynamic_pattern(pathPattern)
         json_pattern = {"pattern": all_waves}
-        with open("p_" + str(i) + ".json", "w") as f:
+        with open("p_" + str(n) + ".json", "w") as f:
             json.dump(json_pattern, f)
+
+        if args.json is False:
+            with open("p_" + str(n) + '.json', "r") as f:
+                json_pattern = json.load(f)
+
+            iters = [iteration["iteration"] for iteration in json_pattern["pattern"]]
+            grids = [
+                [[[255, 255, 255] for _ in range(0, 4)] for _ in range(0, 6)]
+                for _ in range(0, len(iters))
+            ]
+
+            for i, iteration in enumerate(iters):
+                for iter in iteration:
+                    col_coord = int(iter["coord"][0])
+                    row_coord = int(iter["coord"][1])
+                    amp = iter["amplitude"]
+                    grids[i][row_coord - 1][col_coord - 1] = [
+                        255 - amp,
+                        255 - amp,
+                        255 - amp,
+                    ]
+
+            gifutils.save_frames_as_gif(
+                gifutils.frames_from_lists(grids), "gifs", "p_" + str(n)
+            )
