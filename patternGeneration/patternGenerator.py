@@ -13,6 +13,7 @@ import scipy.signal
 def process_amplitude_list(amplitude_list, coord_list, pho_freq, pathLike, static):
     data = []
     motors = []
+
     if pathLike is False and static is False:
         for i in range(len(coord_list)):
             motors.append(
@@ -27,14 +28,15 @@ def process_amplitude_list(amplitude_list, coord_list, pho_freq, pathLike, stati
         iteration = {"iteration": [], "time": 10}
 
         if pathLike is True:
-            for i in range(len(coord_list)):
+            for j in range(len(coord_list)):
                 iteration = {"iteration": [], "time": 10}
                 motor = {
-                    "coord": coord_list[i],
+                    "coord": coord_list[j],
                     "amplitude": random.choice(amplitude_list),
                     "frequency": pho_freq,
                 }
                 iteration["iteration"].append(motor)
+                data.append(iteration)        
         else:
             if static is True:
                 motors = []
@@ -53,7 +55,7 @@ def process_amplitude_list(amplitude_list, coord_list, pho_freq, pathLike, stati
                 active_motors = random.choices(motors, k=random.randint(1, len(motors)))
                 for active_motor in active_motors:
                     iteration["iteration"].append(active_motor)
-        data.append(iteration)        
+            data.append(iteration)        
 
     return data
 
@@ -169,7 +171,7 @@ def sin_modulation(
     modulation: modulation of wave in Hz, e.g. 30
     fraction: fraction of the max amplitude of the motors to be the minimum of the wave, default 0.5
     phi: phase change, e.g. 0.4*(1 / modulation)
-    dis: discretization rate, default for 092 time waves is 6, default for 392 time waves is 12
+    dis: discretization rate, default for 92 time waves is 6, default for 392 time waves is 12
     coord_list: list of coordinates, e.g. [12, 13, 14, 15]
     pho_freq: frequency of phoneme, e.g. 300
     dynamic: generate siple or dynamic pattern
@@ -416,6 +418,14 @@ def initArgsParser() -> argparse.ArgumentParser:
         required=False,
     )
 
+    parser.add_argument(
+        "--numpy",
+        default=False,
+        action="store_true",
+        help="export patterns to numpy binary format",
+        required=False,
+    )
+
     return parser
 
 
@@ -460,7 +470,7 @@ if __name__ == "__main__":
 
             iters = [iteration["iteration"] for iteration in json_pattern["pattern"]]
             grids = [
-                [[[255, 255, 255] for _ in range(0, 4)] for _ in range(0, 6)]
+                [[[0, 0, 0] for _ in range(0, 4)] for _ in range(0, 6)]
                 for _ in range(0, len(iters))
             ]
 
@@ -470,11 +480,14 @@ if __name__ == "__main__":
                     row_coord = int(iter["coord"][1])
                     amp = iter["amplitude"]
                     grids[i][row_coord - 1][col_coord - 1] = [
-                        255 - amp,
-                        255 - amp,
-                        255 - amp,
+                        amp,
+                        amp,
+                        amp
                     ]
 
             gifutils.save_frames_as_gif(
                 gifutils.frames_from_lists(grids), "gifs", "p_" + str(n)
             )
+
+            if args.numpy is True:
+                np.save(f"p_{n}", grids)
