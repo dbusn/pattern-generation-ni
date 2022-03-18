@@ -36,16 +36,18 @@ def process_amplitude_list(amplitude_list, coord_list, pho_freq, pathLike, stati
                     "frequency": pho_freq,
                 }
                 iteration["iteration"].append(motor)
-                data.append(iteration)        
+                data.append(iteration)
         else:
             if static is True:
                 motors = []
                 for j in range(len(coord_list)):
-                    motors.append({
-                        "coord": coord_list[j],
-                        "amplitude": random.choice(amplitude_list),
-                        "frequency": pho_freq,
-                    })
+                    motors.append(
+                        {
+                            "coord": coord_list[j],
+                            "amplitude": random.choice(amplitude_list),
+                            "frequency": pho_freq,
+                        }
+                    )
 
                 for active_motor in motors:
                     iteration["iteration"].append(active_motor)
@@ -55,7 +57,7 @@ def process_amplitude_list(amplitude_list, coord_list, pho_freq, pathLike, stati
                 active_motors = random.choices(motors, k=random.randint(1, len(motors)))
                 for active_motor in active_motors:
                     iteration["iteration"].append(active_motor)
-            data.append(iteration)        
+            data.append(iteration)
 
     return data
 
@@ -142,13 +144,7 @@ def sawtooth_modulation(
     amplitude_list = []
     for i in range(len(x)):
         amplitude_list.append(
-            (int)(
-                (
-                    max_amp * scipy.signal.sawtooth(B * (x[i] - phi))
-                    + max_amp
-                )
-                / 2
-            )
+            (int)((max_amp * scipy.signal.sawtooth(B * (x[i] - phi)) + max_amp) / 2)
         )
 
     return process_amplitude_list(
@@ -307,7 +303,8 @@ def create_dynamic_pattern(pathPattern: bool, waveform: str) -> list:
 
     return all_waves
 
-# TODO Make it obsolete by merging dynami and static pattern functions
+
+# TODO Make it obsolete by merging dynamic and static pattern functions
 def create_static_pattern(waveform: str):
     coord_list = []
     all_waves = []
@@ -483,11 +480,7 @@ if __name__ == "__main__":
                     col_coord = int(iter["coord"][0])
                     row_coord = int(iter["coord"][1])
                     amp = iter["amplitude"]
-                    grids[i][row_coord - 1][col_coord - 1] = [
-                        amp,
-                        amp,
-                        amp
-                    ]
+                    grids[i][row_coord - 1][col_coord - 1] = [amp, amp, amp]
 
             gifutils.save_frames_as_gif(
                 gifutils.frames_from_lists(grids), "gifs", "p_" + str(n)
