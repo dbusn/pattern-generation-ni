@@ -109,7 +109,7 @@ def hanning_modulation(
     is_static: bool,
 ):
     # Hanning window
-    amplitude_list = config.max_amp * np.hanning(dis)
+    amplitude_list = random.choice(config.amplitudes) * np.hanning(dis)
 
     return process_amplitude_list(
         amplitude_list, coord_list, pho_freq, pathLike, is_static
@@ -135,6 +135,7 @@ def sawtooth_modulation(
     start = 0
     stop = time
     x = np.linspace(start, stop, dis)
+    max_amp = random.choice(config.amplitudes)
 
     # Create amplitude list
     phi = 0
@@ -143,8 +144,8 @@ def sawtooth_modulation(
         amplitude_list.append(
             (int)(
                 (
-                    config.max_amp * scipy.signal.sawtooth(B * (x[i] - phi))
-                    + config.max_amp
+                    max_amp * scipy.signal.sawtooth(B * (x[i] - phi))
+                    + max_amp
                 )
                 / 2
             )
@@ -182,8 +183,9 @@ def sin_modulation(
 
     # Can be calculated from input
     B = 2 * np.pi * modulation
-    A = (config.max_amp - fraction * config.max_amp) / 2
-    D = config.max_amp - A
+    max_amp = random.choice(config.amplitudes)
+    A = (max_amp - fraction * max_amp) / 2
+    D = max_amp - A
 
     # For creating wave
     time = total_time / 1000
@@ -204,7 +206,7 @@ def sin_modulation(
 def create_dynamic_pattern(pathPattern: bool, waveform: str) -> list:
     coord_list = []
     all_waves = []
-    n_actuators = random.choice(config.actuators_no)
+    n_actuators = random.choice(config.dynamic_actuators_no)
 
     if pathPattern is True:
         if len(coord_list) == 0:
@@ -215,8 +217,9 @@ def create_dynamic_pattern(pathPattern: bool, waveform: str) -> list:
                 )
             ]
 
+        # TODO add striped pathLike patterns
+
         # Select which actuators are active
-        # actuators_no = number of active actuators
         for _ in range(n_actuators):
             last_w = coord_list[-1:][0][0]
             last_h = coord_list[-1:][0][1]
@@ -233,11 +236,12 @@ def create_dynamic_pattern(pathPattern: bool, waveform: str) -> list:
                 new_h = random.randint(last_h - 1, last_h + 1)
 
             if last_w == config.grid_width:
-                # new_w = random.choice([random.randint(last_w - 1, last_w), 1])
-                new_w = random.randint(last_w - 1, last_w)
+                new_w = random.choice([random.randint(last_w - 1, last_w), 1])
+                # Uncomment next line and comment out the previous line to disable periodic generation
+                # new_w = random.randint(last_w - 1, last_w)
             elif last_w == 1:
-                # new_w = random.choice([random.randint(last_w, last_w + 1), 4])
-                new_w = random.randint(last_w, last_w + 1)
+                new_w = random.choice([random.randint(last_w, last_w + 1), 4])
+                # new_w = random.randint(last_w, last_w + 1)
             else:
                 new_w = random.randint(last_w - 1, last_w + 1)
 
@@ -307,7 +311,7 @@ def create_dynamic_pattern(pathPattern: bool, waveform: str) -> list:
 def create_static_pattern(waveform: str):
     coord_list = []
     all_waves = []
-    n_actuators = random.choice(config.actuators_no)
+    n_actuators = random.choice(config.static_actuators_no)
 
     coord_list = [
         (random.randint(1, config.grid_width), random.randint(1, config.grid_height))
