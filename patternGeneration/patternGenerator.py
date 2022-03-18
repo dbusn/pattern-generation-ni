@@ -1,5 +1,6 @@
 # Functions to create patterns for phonemes
 # Imports
+from importlib.resources import path
 import numpy as np
 import gifutils
 import argparse
@@ -199,10 +200,13 @@ def sin_modulation(
     )
 
 
-def create_dynamic_pattern(pathPattern: bool, waveform: str) -> list:
+def generate_pattern(staticPattern: bool, pathPattern: bool, waveform: str) -> list:
     coord_list = []
     all_waves = []
-    n_actuators = random.choice(config.dynamic_actuators_no)
+    if staticPattern is True:
+        n_actuators = random.choice(config.static_actuators_no)
+    else:
+        n_actuators = random.choice(config.dynamic_actuators_no)
 
     if pathPattern is True:
         if len(coord_list) == 0:
@@ -213,7 +217,7 @@ def create_dynamic_pattern(pathPattern: bool, waveform: str) -> list:
                 )
             ]
 
-        # TODO add striped pathLike patterns
+        # TODO add stridded pathLike patterns
 
         # Select which actuators are active
         for _ in range(n_actuators):
@@ -243,7 +247,12 @@ def create_dynamic_pattern(pathPattern: bool, waveform: str) -> list:
 
             coord_list.append((new_w, new_h))
     else:
-        for _ in range(config.patterns_no):
+        if staticPattern is True:
+            patterns_no = 1
+        else:
+            patterns_no = config.patterns_no
+
+        for _ in range(patterns_no):
             coord_list = [
                 (
                     random.randint(1, config.grid_width),
@@ -262,7 +271,7 @@ def create_dynamic_pattern(pathPattern: bool, waveform: str) -> list:
             coord_list,
             random.choice(config.frequency),
             pathLike=pathPattern,
-            is_static=False,
+            is_static=staticPattern,
         )
     elif waveform == "block":
         all_waves += block_modulation(
@@ -274,7 +283,7 @@ def create_dynamic_pattern(pathPattern: bool, waveform: str) -> list:
             coord_list,
             random.choice(config.frequency),
             pathLike=pathPattern,
-            is_static=False,
+            is_static=staticPattern,
         )
     elif waveform == "sawtooth":
         all_waves += sawtooth_modulation(
@@ -286,7 +295,7 @@ def create_dynamic_pattern(pathPattern: bool, waveform: str) -> list:
             coord_list,
             random.choice(config.frequency),
             pathLike=pathPattern,
-            is_static=False,
+            is_static=staticPattern,
         )
     else:
         all_waves += sin_modulation(
@@ -298,74 +307,10 @@ def create_dynamic_pattern(pathPattern: bool, waveform: str) -> list:
             coord_list,
             random.choice(config.frequency),
             pathLike=pathPattern,
-            is_static=False,
+            is_static=staticPattern,
         )
 
     return all_waves
-
-
-# TODO Make it obsolete by merging dynamic and static pattern functions
-def create_static_pattern(waveform: str):
-    coord_list = []
-    all_waves = []
-    n_actuators = random.choice(config.static_actuators_no)
-
-    coord_list = [
-        (random.randint(1, config.grid_width), random.randint(1, config.grid_height))
-        for _ in range(n_actuators)
-    ]
-
-    if waveform == "hanning":
-        all_waves = hanning_modulation(
-            random.choice(config.total_time),
-            random.choice(config.modulation),
-            config.fraction,
-            random.choice(config.phase_change),
-            config.discretization_rate,
-            coord_list,
-            random.choice(config.frequency),
-            pathLike=False,
-            is_static=True,
-        )
-    elif waveform == "block":
-        all_waves = block_modulation(
-            random.choice(config.total_time),
-            random.choice(config.modulation),
-            config.fraction,
-            random.choice(config.phase_change),
-            config.discretization_rate,
-            coord_list,
-            random.choice(config.frequency),
-            pathLike=False,
-            is_static=True,
-        )
-    elif waveform == "sawtooth":
-        all_waves = sawtooth_modulation(
-            random.choice(config.total_time),
-            random.choice(config.modulation),
-            config.fraction,
-            random.choice(config.phase_change),
-            config.discretization_rate,
-            coord_list,
-            random.choice(config.frequency),
-            pathLike=False,
-            is_static=True,
-        )
-    else:
-        all_waves = sin_modulation(
-            random.choice(config.total_time),
-            random.choice(config.modulation),
-            config.fraction,
-            random.choice(config.phase_change),
-            config.discretization_rate,
-            coord_list,
-            random.choice(config.frequency),
-            pathLike=False,
-            is_static=True,
-        )
-
-    return all_waves
-
 
 def initArgsParser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Generate dynamic patterns")
@@ -435,31 +380,25 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.pathLike is True and args.static is True:
-        print("Static patterns cannot be path-like. Generating static patterns...")
+        print("Warning: Static patterns cannot be path-like. Generating static patterns...")
 
     # If more than one waveform is passed
     if sum([args.hanning, args.block, args.sawtooth]) > 1:
-        print("Error: only one waveform can be specified at the time")
+        print("Error: only one waveform can be specified at the time. Quitting...")
         exit(1)
 
-    waveform = ""
+    wavetype = ""
     if args.hanning is True:
-        waveform = "hanning"
+        wavetype = "hanning"
     elif args.block is True:
-        waveform = "block"
+        wavetype = "block"
     elif args.sawtooth is True:
-        waveform = "sawtooth"
+        wavetype = "sawtooth"
     else:
-        waveform = "sin"
+        wavetype = "sin"
 
-    pathPattern = args.pathLike
     for n in range(args.n):
-        if args.static is True:
-            all_waves = create_static_pattern(waveform=waveform)
-        else:
-            all_waves = create_dynamic_pattern(
-                pathPattern=pathPattern, waveform=waveform
-            )
+        all_waves = generate_pattern(staticPattern=args.static, waveform=wavetype, pathPattern=args.pathLike)
 
         json_pattern = {"pattern": all_waves}
         with open("p_" + str(n) + ".json", "w") as f:
