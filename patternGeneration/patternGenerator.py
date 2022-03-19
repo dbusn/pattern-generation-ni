@@ -1,6 +1,5 @@
 # Functions to create patterns for phonemes
 # Imports
-from importlib.resources import path
 import numpy as np
 import gifutils
 import argparse
@@ -10,7 +9,9 @@ import scipy
 import config
 import scipy.signal
 
+# from numba import jit
 
+# @jit(nopython=True)
 def process_amplitude_list(amplitude_list, coord_list, pho_freq, pathLike, static):
     data = []
     motors = []
@@ -63,28 +64,18 @@ def process_amplitude_list(amplitude_list, coord_list, pho_freq, pathLike, stati
     return data
 
 
-def block_modulation(
-    total_time: int,
-    modulation: int,
-    fraction: float,
-    phi: float,
-    dis: int,
-    coord_list: list,
-    pho_freq: int,
-    pathLike: bool,
-    is_static: bool,
-):
+def block_modulation(modulation_data: dict,):
     # Note that we assume a block function y = 1 if 0 <= x < period, -1 if period < x < 2*period
     # Calculated from input
-    period = 1 / pho_freq
+    period = 1 / modulation_data["phase_change"]
 
     a = random.choice(config.amplitudes)
 
     # For creating wave
-    time = total_time / 1000
+    time = modulation_data["total_time"] / 1000
     start = 0
     stop = time
-    x = np.linspace(start, stop, dis)
+    x = np.linspace(start, stop, modulation_data["dis"])
 
     # Create amplitude list
     amplitude_list = []
@@ -96,48 +87,38 @@ def block_modulation(
         amplitude_list.append((int)(a * sign))
 
     return process_amplitude_list(
-        amplitude_list, coord_list, pho_freq, pathLike, is_static
+        amplitude_list,
+        modulation_data["coord_list"],
+        modulation_data["freq"],
+        modulation_data["path_like"],
+        modulation_data["is_static"],
     )
 
 
-def hanning_modulation(
-    total_time: int,
-    modulation: int,
-    fraction: float,
-    phi: float,
-    dis: int,
-    coord_list: list,
-    pho_freq: int,
-    pathLike: bool,
-    is_static: bool,
-):
+def hanning_modulation(modulation_data: dict,):
     # Hanning window
-    amplitude_list = random.choice(config.amplitudes) * np.hanning(dis)
+    amplitude_list = random.choice(config.amplitudes) * np.hanning(
+        modulation_data["dis"]
+    )
 
     return process_amplitude_list(
-        amplitude_list, coord_list, pho_freq, pathLike, is_static
+        amplitude_list,
+        modulation_data["coord_list"],
+        modulation_data["freq"],
+        modulation_data["path_like"],
+        modulation_data["is_static"],
     )
 
 
-def sawtooth_modulation(
-    total_time: int,
-    modulation: int,
-    fraction: float,
-    phi: float,
-    dis: int,
-    coord_list: list,
-    pho_freq: int,
-    pathLike: bool,
-    is_static: bool,
-):
+def sawtooth_modulation(modulation_data: dict,):
     # Computed from input
-    B = 2 * np.pi * pho_freq
+    B = 2 * np.pi * modulation_data["freq"]
 
     # For creating a wave
-    time = total_time / 1000
+    time = modulation_data["total_time"] / 1000
     start = 0
     stop = time
-    x = np.linspace(start, stop, dis)
+    x = np.linspace(start, stop, modulation_data["dis"])
     max_amp = random.choice(config.amplitudes)
 
     # Create amplitude list
@@ -149,54 +130,40 @@ def sawtooth_modulation(
         )
 
     return process_amplitude_list(
-        amplitude_list, coord_list, pho_freq, pathLike, is_static
+        amplitude_list,
+        modulation_data["coord_list"],
+        modulation_data["freq"],
+        modulation_data["path_like"],
+        modulation_data["is_static"],
     )
 
 
-def sin_modulation(
-    total_time: int,
-    modulation: int,
-    fraction: float,
-    phi: float,
-    dis: int,
-    coord_list: list,
-    pho_freq: int,
-    pathLike: bool,
-    is_static: bool,
-):
-    """
-    total_time: total time of sinus in ms, e.g. 392
-    modulation: modulation of wave in Hz, e.g. 30
-    fraction: fraction of the max amplitude of the motors to be the minimum of the wave, default 0.5
-    phi: phase change, e.g. 0.4*(1 / modulation)
-    dis: discretization rate, default for 92 time waves is 6, default for 392 time waves is 12
-    coord_list: list of coordinates, e.g. [12, 13, 14, 15]
-    pho_freq: frequency of phoneme, e.g. 300
-    dynamic: generate siple or dynamic pattern
-    pathLike: generate pathLike or completely random pattern
-
-    returns: dict representing a pattern
-    """
-
-    # Can be calculated from input
-    B = 2 * np.pi * modulation
+def sin_modulation(modulation_data: dict):
+    # Calculated from input
+    B = 2 * np.pi * modulation_data["modulation"]
     max_amp = random.choice(config.amplitudes)
-    A = (max_amp - fraction * max_amp) / 2
+    A = (max_amp - modulation_data["fraction"] * max_amp) / 2
     D = max_amp - A
 
     # For creating wave
-    time = total_time / 1000
+    time = modulation_data["total_time"] / 1000
     start = 0
     stop = time
-    x = np.linspace(start, stop, int(time * 1000 / dis))
+    x = np.linspace(start, stop, int(time * 1000 / modulation_data["dis"]))
 
     # Create amplitude list
     amplitude_list = []
     for i in range(len(x)):
-        amplitude_list.append((int)(A * np.sin(B * (x[i] - phi)) + D))
+        amplitude_list.append(
+            (int)(A * np.sin(B * (x[i] - modulation_data["phase_change"])) + D)
+        )
 
     return process_amplitude_list(
-        amplitude_list, coord_list, pho_freq, pathLike, is_static
+        amplitude_list,
+        modulation_data["coord_list"],
+        modulation_data["freq"],
+        modulation_data["path_like"],
+        modulation_data["is_static"],
     )
 
 
@@ -261,56 +228,42 @@ def generate_pattern(staticPattern: bool, pathPattern: bool, waveform: str) -> l
                 for _ in range(n_actuators)
             ]
 
+    """
+    total_time: total time of sinus in ms, e.g. 392
+    modulation: modulation of wave in Hz, e.g. 30
+    fraction: fraction of the max amplitude of the motors to be the minimum of the wave, default 0.5
+    phi: phase change, e.g. 0.4*(1 / modulation)
+    dis: discretization rate, default for 92 time waves is 6, default for 392 time waves is 12
+    coord_list: list of coordinates, e.g. [12, 13, 14, 15]
+    pho_freq: frequency of phoneme, e.g. 300
+    dynamic: generate siple or dynamic pattern
+    pathLike: generate pathLike or completely random pattern
+
+    returns: dict representing a pattern
+    """
+    modulation_input = {
+        "total_time": random.choice(config.total_time),
+        "modulation": random.choice(config.modulation),
+        "fraction": config.fraction,
+        "phase_change": random.choice(config.phase_change),
+        "dis": config.discretization_rate,
+        "coord_list": coord_list,
+        "freq": random.choice(config.frequency),
+        "path_like": pathPattern,
+        "is_static": staticPattern,
+    }
+
     if waveform == "hanning":
-        all_waves += hanning_modulation(
-            random.choice(config.total_time),
-            random.choice(config.modulation),
-            config.fraction,
-            random.choice(config.phase_change),
-            config.discretization_rate,
-            coord_list,
-            random.choice(config.frequency),
-            pathLike=pathPattern,
-            is_static=staticPattern,
-        )
+        all_waves += hanning_modulation(modulation_input)
     elif waveform == "block":
-        all_waves += block_modulation(
-            random.choice(config.total_time),
-            random.choice(config.modulation),
-            config.fraction,
-            random.choice(config.phase_change),
-            config.discretization_rate,
-            coord_list,
-            random.choice(config.frequency),
-            pathLike=pathPattern,
-            is_static=staticPattern,
-        )
+        all_waves += block_modulation(modulation_input)
     elif waveform == "sawtooth":
-        all_waves += sawtooth_modulation(
-            random.choice(config.total_time),
-            random.choice(config.modulation),
-            config.fraction,
-            random.choice(config.phase_change),
-            config.discretization_rate,
-            coord_list,
-            random.choice(config.frequency),
-            pathLike=pathPattern,
-            is_static=staticPattern,
-        )
+        all_waves += sawtooth_modulation(modulation_input)
     else:
-        all_waves += sin_modulation(
-            random.choice(config.total_time),
-            random.choice(config.modulation),
-            config.fraction,
-            random.choice(config.phase_change),
-            config.discretization_rate,
-            coord_list,
-            random.choice(config.frequency),
-            pathLike=pathPattern,
-            is_static=staticPattern,
-        )
+        all_waves += sin_modulation(modulation_input)
 
     return all_waves
+
 
 def initArgsParser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Generate dynamic patterns")
@@ -380,7 +333,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.pathLike is True and args.static is True:
-        print("Warning: Static patterns cannot be path-like. Generating static patterns...")
+        print(
+            "Warning: Static patterns cannot be path-like. Generating static patterns..."
+        )
 
     # If more than one waveform is passed
     if sum([args.hanning, args.block, args.sawtooth]) > 1:
@@ -398,14 +353,17 @@ if __name__ == "__main__":
         wavetype = "sin"
 
     for n in range(args.n):
-        all_waves = generate_pattern(staticPattern=args.static, waveform=wavetype, pathPattern=args.pathLike)
+        all_waves = generate_pattern(
+            staticPattern=args.static, waveform=wavetype, pathPattern=args.pathLike
+        )
 
+        # TODO don't generate gifs from json
         json_pattern = {"pattern": all_waves}
-        with open("p_" + str(n) + ".json", "w") as f:
+        with open("p_" + str(n+1) + ".json", "w") as f:
             json.dump(json_pattern, f)
 
         if args.jsonOnly is False:
-            with open("p_" + str(n) + ".json", "r") as f:
+            with open("p_" + str(n+1) + ".json", "r") as f:
                 json_pattern = json.load(f)
 
             iters = [iteration["iteration"] for iteration in json_pattern["pattern"]]
@@ -422,8 +380,8 @@ if __name__ == "__main__":
                     grids[i][row_coord - 1][col_coord - 1] = [amp, amp, amp]
 
             gifutils.save_frames_as_gif(
-                gifutils.frames_from_lists(grids), "gifs", "p_" + str(n)
+                gifutils.frames_from_lists(grids), "gifs", "p_" + str(n+1)
             )
 
             if args.numpy is True:
-                np.save(f"p_{n}", grids)
+                np.save(f"p_{n+1}", grids)
