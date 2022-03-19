@@ -1,5 +1,7 @@
 # Functions to create patterns for phonemes
 # Imports
+import os
+import sys
 import numpy as np
 import gifutils
 import argparse
@@ -9,9 +11,7 @@ import scipy
 import config
 import scipy.signal
 
-# from numba import jit
 
-# @jit(nopython=True)
 def process_amplitude_list(amplitude_list, coord_list, pho_freq, pathLike, static):
     data = []
     motors = []
@@ -111,7 +111,7 @@ def hanning_modulation(modulation_data: dict,):
 
 
 def sawtooth_modulation(modulation_data: dict,):
-    # Computed from input
+    # Calculated from input
     B = 2 * np.pi * modulation_data["freq"]
 
     # For creating a wave
@@ -167,15 +167,15 @@ def sin_modulation(modulation_data: dict):
     )
 
 
-def generate_pattern(staticPattern: bool, pathPattern: bool, waveform: str) -> list:
+def generate_pattern(pattern_conf: dict) -> list:
     coord_list = []
     all_waves = []
-    if staticPattern is True:
+    if pattern_conf["isStatic"] is True:
         n_actuators = random.choice(config.static_actuators_no)
     else:
         n_actuators = random.choice(config.dynamic_actuators_no)
 
-    if pathPattern is True:
+    if pattern_conf["isPathLike"] is True:
         if len(coord_list) == 0:
             coord_list = [
                 (
@@ -184,40 +184,38 @@ def generate_pattern(staticPattern: bool, pathPattern: bool, waveform: str) -> l
                 )
             ]
 
-        # TODO add stridded pathLike patterns
+        jump = 2 if pattern_conf["isStridden"] is True else 1
 
         # Select which actuators are active
         for _ in range(n_actuators):
             last_w = coord_list[-1:][0][0]
             last_h = coord_list[-1:][0][1]
 
+            # For debugging
             # print("H:" + str(last_h) + " W:" + str(last_w))
 
-            if last_h == config.grid_height:
-                # new_h = random.choice([random.randint(last_h - 1, last_h), 1])
-                new_h = random.randint(last_h - 1, last_h)
-            elif last_h == 1:
-                # new_h = random.choice([random.randint(last_h, last_h + 1), 6])
-                new_h = random.randint(last_h, last_h + 1)
+            if last_h == config.grid_height or last_h == config.grid_height - 1:
+                new_h = random.choice([last_h - jump, last_h])
+            elif last_h == 1 or last_h == 2:
+                new_h = random.choice([last_h, last_h + jump])
             else:
-                new_h = random.randint(last_h - 1, last_h + 1)
+                new_h = random.choice([last_h - jump, last_h + jump])
 
-            if last_w == config.grid_width:
-                new_w = random.choice([random.randint(last_w - 1, last_w), 1])
-                # Uncomment next line and comment out the previous line to disable periodic generation
-                # new_w = random.randint(last_w - 1, last_w)
-            elif last_w == 1:
-                new_w = random.choice([random.randint(last_w, last_w + 1), 4])
-                # new_w = random.randint(last_w, last_w + 1)
+            if last_w == config.grid_width or last_w == config.grid_width - 1:
+                new_w = random.choice([random.randint(last_w - jump, last_w), jump])
+            elif last_w == 1 or last_w == 2:
+                new_w = random.choice([random.randint(last_w, last_w + jump), config.grid_width + 1 - jump])
             else:
-                new_w = random.randint(last_w - 1, last_w + 1)
+                new_w = random.randint(last_w - jump, last_w + jump)
 
             coord_list.append((new_w, new_h))
+    # Regular dynamic or static pattern
     else:
-        if staticPattern is True:
+        if pattern_conf["isStatic"] is True:
+            # If static, only one varying 
             patterns_no = 1
         else:
-            patterns_no = config.patterns_no
+            patterns_no = random.choice(config.patterns_no)
 
         for _ in range(patterns_no):
             coord_list = [
@@ -249,15 +247,15 @@ def generate_pattern(staticPattern: bool, pathPattern: bool, waveform: str) -> l
         "dis": config.discretization_rate,
         "coord_list": coord_list,
         "freq": random.choice(config.frequency),
-        "path_like": pathPattern,
-        "is_static": staticPattern,
+        "path_like": pattern_conf["isPathLike"],
+        "is_static": pattern_conf["isStatic"],
     }
 
-    if waveform == "hanning":
+    if pattern_conf["waveform"] == "hanning":
         all_waves += hanning_modulation(modulation_input)
-    elif waveform == "block":
+    elif pattern_conf["waveform"] == "block":
         all_waves += block_modulation(modulation_input)
-    elif waveform == "sawtooth":
+    elif pattern_conf["waveform"] == "sawtooth":
         all_waves += sawtooth_modulation(modulation_input)
     else:
         all_waves += sin_modulation(modulation_input)
@@ -265,83 +263,31 @@ def generate_pattern(staticPattern: bool, pathPattern: bool, waveform: str) -> l
     return all_waves
 
 
-def initArgsParser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Generate dynamic patterns")
-    parser.add_argument(
-        "-n", type=int, nargs="?", help="number of patterns to generate", required=True
-    )
-    parser.add_argument(
-        "--pathLike",
-        default=False,
-        action="store_true",
-        help="generate path-like patterns",
-        required=False,
-    )
-    parser.add_argument(
-        "--jsonOnly",
-        default=False,
-        action="store_true",
-        help="generate only json files",
-        required=False,
-    )
-
-    parser.add_argument(
-        "--static",
-        default=False,
-        action="store_true",
-        help="generate static patterns",
-        required=False,
-    )
-
-    parser.add_argument(
-        "--hanning",
-        default=False,
-        action="store_true",
-        help="generate patterns with hann function modulation",
-        required=False,
-    )
-
-    parser.add_argument(
-        "--block",
-        default=False,
-        action="store_true",
-        help="generate patterns with block modulation",
-        required=False,
-    )
-
-    parser.add_argument(
-        "--sawtooth",
-        default=False,
-        action="store_true",
-        help="generate patterns with block modulation",
-        required=False,
-    )
-
-    parser.add_argument(
-        "--numpy",
-        default=False,
-        action="store_true",
-        help="export patterns to numpy binary format",
-        required=False,
-    )
-
-    return parser
-
-
 if __name__ == "__main__":
-    parser = initArgsParser()
+    parser = config.initArgsParser()
     args = parser.parse_args()
 
+    # Checks for mutually exclusive arguments
+    # If both pathLike and static patterns are selected
     if args.pathLike is True and args.static is True:
         print(
-            "Warning: Static patterns cannot be path-like. Generating static patterns..."
+            "Warning: Static patterns cannot be path-like. Generating static patterns...",
+            file=sys.stderr,
         )
+
+    if args.stridden is True and args.pathLike is False:
+        print("Error: Only path-like patterns can be stridden", file=sys.stderr)
+        exit(1)
 
     # If more than one waveform is passed
     if sum([args.hanning, args.block, args.sawtooth]) > 1:
-        print("Error: only one waveform can be specified at the time. Quitting...")
-        exit(1)
+        print(
+            "Error: only one waveform can be specified at the time. Quitting...",
+            file=sys.stderr,
+        )
+        exit(2)
 
+    # Define the desired wavetype
     wavetype = ""
     if args.hanning is True:
         wavetype = "hanning"
@@ -352,18 +298,29 @@ if __name__ == "__main__":
     else:
         wavetype = "sin"
 
-    for n in range(args.n):
-        all_waves = generate_pattern(
-            staticPattern=args.static, waveform=wavetype, pathPattern=args.pathLike
-        )
+    # A dictionary to minimize the number of arguments passes
+    pattern_conf = {
+        "isStatic": args.static,
+        "waveform": wavetype,
+        "isPathLike": args.pathLike,
+        "isStridden": args.stridden,
+    }
 
-        # TODO don't generate gifs from json
+    # If no json/ directory is found, create it
+    if not os.path.exists('json'):
+        os.mkdir('json')
+
+    # Generate n patterns
+    for n in range(args.n):
+        all_waves = generate_pattern(pattern_conf)
+
+        # TODO don't generate gifs from json <- why not?
         json_pattern = {"pattern": all_waves}
-        with open("p_" + str(n+1) + ".json", "w") as f:
+        with open("json/" + "p_" + str(n + 1) + ".json", "w") as f:
             json.dump(json_pattern, f)
 
         if args.jsonOnly is False:
-            with open("p_" + str(n+1) + ".json", "r") as f:
+            with open("json/" + "p_" + str(n + 1) + ".json", "r") as f:
                 json_pattern = json.load(f)
 
             iters = [iteration["iteration"] for iteration in json_pattern["pattern"]]
@@ -380,7 +337,7 @@ if __name__ == "__main__":
                     grids[i][row_coord - 1][col_coord - 1] = [amp, amp, amp]
 
             gifutils.save_frames_as_gif(
-                gifutils.frames_from_lists(grids), "gifs", "p_" + str(n+1)
+                gifutils.frames_from_lists(grids), "gifs", "p_" + str(n + 1)
             )
 
             if args.numpy is True:
