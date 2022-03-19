@@ -26,6 +26,6 @@ List of parameters:
 Patterns created by patternGenerator are automatically converted to gif files. If you want to keep only the json files, run dynamicGenerator with `--jsonOnly` flag
 If you have JSON pattern files generated using an external tool, you may want to convert them to gif files. To do so:
 * **MacOS/Linux**:
-Once all the json files are in `json2gif` directory  run ```bash convert2GIF.bash``` script to output all the GIFs into a GIFS/ subdirectory.
+Once all the json files are in `json2gif` directory  run ```bash convert2Gif.bash``` script to output all the GIFs into a GIFS/ subdirectory.
 * **Windows:**
-The same procedure applies but execute ```.\convert2GIF.ps1``` using powershell.
+The same procedure applies but execute ```.\convert2Gif.ps1``` using powershell.
