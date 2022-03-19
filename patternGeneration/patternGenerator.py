@@ -4,7 +4,6 @@ import os
 import sys
 import numpy as np
 import gifutils
-import argparse
 import json
 import random
 import scipy
@@ -64,11 +63,12 @@ def process_amplitude_list(amplitude_list, coord_list, pho_freq, pathLike, stati
     return data
 
 
-def block_modulation(modulation_data: dict,):
+def block_modulation(modulation_data: dict):
     # Note that we assume a block function y = 1 if 0 <= x < period, -1 if period < x < 2*period
     # Calculated from input
     period = 1 / modulation_data["phase_change"]
 
+    # High or low maximum amplitude
     a = random.choice(config.amplitudes)
 
     # For creating wave
@@ -80,10 +80,8 @@ def block_modulation(modulation_data: dict,):
     # Create amplitude list
     amplitude_list = []
     for i in range(len(x)):
-        if x[i] % 2 * period < period:  # if 0 <= x < period
-            sign = 1
-        else:  # period <= x < 2*period
-            sign = -1
+        sign = 1 if (x[i] % 2 * period < period) else -1
+
         amplitude_list.append((int)(a * sign))
 
     return process_amplitude_list(
@@ -95,7 +93,7 @@ def block_modulation(modulation_data: dict,):
     )
 
 
-def hanning_modulation(modulation_data: dict,):
+def hanning_modulation(modulation_data: dict):
     # Hanning window
     amplitude_list = random.choice(config.amplitudes) * np.hanning(
         modulation_data["dis"]
@@ -110,7 +108,7 @@ def hanning_modulation(modulation_data: dict,):
     )
 
 
-def sawtooth_modulation(modulation_data: dict,):
+def sawtooth_modulation(modulation_data: dict):
     # Calculated from input
     B = 2 * np.pi * modulation_data["freq"]
 
@@ -119,6 +117,8 @@ def sawtooth_modulation(modulation_data: dict,):
     start = 0
     stop = time
     x = np.linspace(start, stop, modulation_data["dis"])
+
+    # High or low maximum amplitude
     max_amp = random.choice(config.amplitudes)
 
     # Create amplitude list
@@ -170,10 +170,8 @@ def sin_modulation(modulation_data: dict):
 def generate_pattern(pattern_conf: dict) -> list:
     coord_list = []
     all_waves = []
-    if pattern_conf["isStatic"] is True:
-        n_actuators = random.choice(config.static_actuators_no)
-    else:
-        n_actuators = random.choice(config.dynamic_actuators_no)
+
+    n_actuators = random.choice(config.static_actuators_no) if pattern_conf["isStatic"] is True else random.choice(config.dynamic_actuators_no)
 
     if pattern_conf["isPathLike"] is True:
         if len(coord_list) == 0:
@@ -188,12 +186,14 @@ def generate_pattern(pattern_conf: dict) -> list:
 
         # Select which actuators are active
         for _ in range(n_actuators):
+            # Get the last pair of coordinates
             last_w = coord_list[-1:][0][0]
             last_h = coord_list[-1:][0][1]
 
             # For debugging
             # print("H:" + str(last_h) + " W:" + str(last_w))
 
+            # Row selection
             if last_h == config.grid_height or last_h == config.grid_height - 1:
                 new_h = random.choice([last_h - jump, last_h])
             elif last_h == 1 or last_h == 2:
@@ -201,6 +201,7 @@ def generate_pattern(pattern_conf: dict) -> list:
             else:
                 new_h = random.choice([last_h - jump, last_h + jump])
 
+            # Column selection
             if last_w == config.grid_width or last_w == config.grid_width - 1:
                 new_w = random.choice([random.randint(last_w - jump, last_w), jump])
             elif last_w == 1 or last_w == 2:
@@ -208,15 +209,15 @@ def generate_pattern(pattern_conf: dict) -> list:
             else:
                 new_w = random.randint(last_w - jump, last_w + jump)
 
+            # Append randomly selected coordinates to the coordinate list
             coord_list.append((new_w, new_h))
     # Regular dynamic or static pattern
     else:
-        if pattern_conf["isStatic"] is True:
-            # If static, only one varying 
-            patterns_no = 1
-        else:
-            patterns_no = random.choice(config.patterns_no)
+        # If static, only one frame is generated
+        # Otherwise select randomly from config
+        patterns_no = 1 if pattern_conf["isStatic"] is True else random.choice(config.patterns_no)
 
+        # Generate coordinates list
         for _ in range(patterns_no):
             coord_list = [
                 (
@@ -344,5 +345,3 @@ if __name__ == "__main__":
             gifutils.save_frames_as_gif(
                 gifutils.frames_from_lists(grids), "gifs", "p_" + str(n + 1)
             )
-
-
