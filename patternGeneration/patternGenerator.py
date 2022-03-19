@@ -310,9 +310,14 @@ if __name__ == "__main__":
     if not os.path.exists('json'):
         os.mkdir('json')
 
+    if args.numpy is True and os.path.exists('numpy') is False:
+        os.mkdir('numpy')
+
     # Generate n patterns
     for n in range(args.n):
         all_waves = generate_pattern(pattern_conf)
+        if args.numpy is True:
+            np.save(f"numpy/p_{n+1}", all_waves)
 
         # TODO don't generate gifs from json <- why not?
         json_pattern = {"pattern": all_waves}
@@ -340,5 +345,4 @@ if __name__ == "__main__":
                 gifutils.frames_from_lists(grids), "gifs", "p_" + str(n + 1)
             )
 
-            if args.numpy is True:
-                np.save(f"p_{n+1}", grids)
+

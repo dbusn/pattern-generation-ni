@@ -5,9 +5,13 @@ visil/
 ckpt/
 ckpt.zip
 
+# Generated gif, json and numpy files
 *.gif
 *.json
+*.npy
 
+# My personal scripts
+*.fish
 
 # Editors
 .vscode/
