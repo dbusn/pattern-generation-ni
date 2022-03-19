@@ -4,10 +4,14 @@
 visil/
 ckpt/
 ckpt.zip
-gifs/*.gif
-!/REED/gifs/*.gif
-generator/*.gif
 
+# Generated gif, json and numpy files
+*.gif
+*.json
+*.npy
+
+# My personal scripts
+*.fish
 
 # Editors
 .vscode/
