@@ -11,7 +11,7 @@ import config
 import scipy.signal
 
 
-def process_amplitude_list(amplitude_list, coord_list, pho_freq, pathLike, static, pattern_time):
+def process_amplitude_list(amplitude_list, coord_list, pho_freq, pathLike, static, total_pattern_time):
     data = []
     motors = []
 
@@ -23,6 +23,9 @@ def process_amplitude_list(amplitude_list, coord_list, pho_freq, pathLike, stati
     for coord in coord_list:
         n_coord_list.append(int(str(coord[0]) + str(coord[1])))
 
+    pattern_time = total_pattern_time / len(coord_list)
+    
+
     coord_list = n_coord_list
     # Initialize a list of all available motors for non-path-like dynamic pattern generation
     if pathLike is False and static is False:
@@ -32,7 +35,7 @@ def process_amplitude_list(amplitude_list, coord_list, pho_freq, pathLike, stati
             motors.append(
                 {
                     "coord": coord_list[i],
-                    "amplitude": random.choice(amplitude_list),
+                    "amplitude": amplitude_list[i],
                     "frequency": pho_freq,
                 }
             )
@@ -41,32 +44,33 @@ def process_amplitude_list(amplitude_list, coord_list, pho_freq, pathLike, stati
     if pathLike is True:
         # For each motor in the coordinate list 
         j = 0
-        for i in range(len(amplitude_list)):
+        for i in range(len(coord_list)):
             iteration = {"iteration": [], "time": pattern_time}
             motor = {
-                "coord": coord_list[j],
+                "coord": coord_list[i],
                 "amplitude": amplitude_list[i],
                 "frequency": pho_freq,
             }
             iteration["iteration"].append(motor)
             data.append(iteration)
 
-            j = 0 if j == coord_no-1 else j + 1
+            j += 1
+            if j == coord_no-1:
+                break
+
     # Static pattern            
     elif static is True:
         motors = []
         # Append all the motors
         j = 0
-        for i in range(len(amplitude_list)):
+        for i in range(len(coord_list)):
             motors.append(
                 {
-                    "coord": coord_list[j],
+                    "coord": coord_list[i],
                     "amplitude": amplitude_list[i],
                     "frequency": pho_freq,
                 }
             )
-
-            j = 0 if j == coord_no-1 else j + 1
 
             iteration = {"iteration": [], "time": pattern_time}
             for active_motor in motors:
@@ -74,7 +78,7 @@ def process_amplitude_list(amplitude_list, coord_list, pho_freq, pathLike, stati
             data.append(iteration)
     # dynamic not path-like
     else:
-        for _ in range(len(amplitude_list)):
+        for _ in range(len(coord_list)):
             iteration = {"iteration": [], "time": pattern_time}
             # Choose k random motors that are active in an iteration
             active_motors = random.choices(motors, k=random.randint(1, len(motors)))

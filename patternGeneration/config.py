@@ -11,7 +11,7 @@ discretization_rate: int = 8
 
 # Number of actuators active during the execution of a pattern
 static_actuators_no: list = [x for x in range(1,9)]
-dynamic_actuators_no: list = [x for x in range(2,17)]
+dynamic_actuators_no: list = [x for x in range(4,9)]
 
 # Grid dimensions
 # Gif conversion utility may require further adjustments if you want to change that
