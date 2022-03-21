@@ -15,8 +15,14 @@ def process_amplitude_list(amplitude_list, coord_list, pho_freq, pathLike, stati
     data = []
     motors = []
 
+    # Number of actuators active in the pattern
+    coord_no = len(coord_list)
+
+    # Initialize a list of all available motors for non-path-like dynamic pattern generation
     if pathLike is False and static is False:
-        for i in range(len(coord_list)):
+        # For each motor in the coordinate list
+        for i in range(coord_no):
+            # Append to the list of active motors
             motors.append(
                 {
                     "coord": coord_list[i],
@@ -25,38 +31,48 @@ def process_amplitude_list(amplitude_list, coord_list, pho_freq, pathLike, stati
                 }
             )
 
-    for i in range(len(amplitude_list)):
-        iteration = {"iteration": [], "time": 10}
+    # Path-like pattern generation
+    if pathLike is True:
+        # For each motor in the coordinate list 
+        j = 0
+        for i in range(len(amplitude_list)):
+            iteration = {"iteration": [], "time": 5}
+            motor = {
+                "coord": coord_list[j],
+                "amplitude": amplitude_list[i],
+                "frequency": pho_freq,
+            }
+            iteration["iteration"].append(motor)
+            data.append(iteration)
 
-        if pathLike is True:
-            for j in range(len(coord_list)):
-                iteration = {"iteration": [], "time": 10}
-                motor = {
+            j = 0 if j == coord_no-1 else j + 1
+    # Static pattern            
+    elif static is True:
+        motors = []
+        # Append all the motors
+        j = 0
+        for i in range(len(amplitude_list)):
+            motors.append(
+                {
                     "coord": coord_list[j],
-                    "amplitude": random.choice(amplitude_list),
+                    "amplitude": amplitude_list[i],
                     "frequency": pho_freq,
                 }
-                iteration["iteration"].append(motor)
-                data.append(iteration)
-        else:
-            if static is True:
-                motors = []
-                for j in range(len(coord_list)):
-                    motors.append(
-                        {
-                            "coord": coord_list[j],
-                            "amplitude": random.choice(amplitude_list),
-                            "frequency": pho_freq,
-                        }
-                    )
+            )
 
-                for active_motor in motors:
-                    iteration["iteration"].append(active_motor)
-            # Regular dynamic pattern
-            else:
-                # Choose k random motors that are active in an iteration
-                active_motors = random.choices(motors, k=random.randint(1, len(motors)))
-                for active_motor in active_motors:
+            j = 0 if j == coord_no-1 else j + 1
+
+            iteration = {"iteration": [], "time": 5}
+            for active_motor in motors:
+                iteration["iteration"].append(active_motor)
+            data.append(iteration)
+    # dynamic not path-like
+    else:
+        for _ in range(len(amplitude_list)):
+            iteration = {"iteration": [], "time": 5}
+            # Choose k random motors that are active in an iteration
+            active_motors = random.choices(motors, k=random.randint(1, len(motors)))
+            for active_motor in active_motors:
                     iteration["iteration"].append(active_motor)
             data.append(iteration)
 
@@ -91,6 +107,7 @@ def block_modulation(modulation_data: dict):
         modulation_data["path_like"],
         modulation_data["is_static"],
     )
+    
 
 
 def hanning_modulation(modulation_data: dict):
@@ -149,7 +166,11 @@ def sin_modulation(modulation_data: dict):
     time = modulation_data["total_time"] / 1000
     start = 0
     stop = time
-    x = np.linspace(start, stop, int(time * 1000 / modulation_data["dis"]))
+
+
+    # Step aka number of frames (TOFIX in path-like patterns)
+    step = 80 if modulation_data["total_time"] == 400 else 23
+    x = np.linspace(start, stop, step)
 
     # Create amplitude list
     amplitude_list = []
@@ -182,7 +203,8 @@ def generate_pattern(pattern_conf: dict) -> list:
                 )
             ]
 
-        jump = 2 if pattern_conf["isStridden"] is True else 1
+        
+        step = 2 if pattern_conf["isStridden"] is True else 1
 
         # Select which actuators are active
         for _ in range(n_actuators):
@@ -190,27 +212,25 @@ def generate_pattern(pattern_conf: dict) -> list:
             last_w = coord_list[-1:][0][0]
             last_h = coord_list[-1:][0][1]
 
-            # For debugging
-            # print("H:" + str(last_h) + " W:" + str(last_w))
-
             # Row selection
             if last_h == config.grid_height or last_h == config.grid_height - 1:
-                new_h = random.choice([last_h - jump, last_h])
+                new_h = random.choice([last_h - step, last_h])
             elif last_h == 1 or last_h == 2:
-                new_h = random.choice([last_h, last_h + jump])
+                new_h = random.choice([last_h, last_h + step])
             else:
-                new_h = random.choice([last_h - jump, last_h + jump])
+                new_h = random.choice([last_h - step, last_h + step])
 
             # Column selection
             if last_w == config.grid_width or last_w == config.grid_width - 1:
-                new_w = random.choice([random.randint(last_w - jump, last_w), jump])
+                new_w = random.choice([random.randint(last_w - step, last_w), step])
             elif last_w == 1 or last_w == 2:
-                new_w = random.choice([random.randint(last_w, last_w + jump), config.grid_width + 1 - jump])
+                new_w = random.choice([random.randint(last_w, last_w + step), config.grid_width + 1 - step])
             else:
-                new_w = random.randint(last_w - jump, last_w + jump)
+                new_w = random.randint(last_w - step, last_w + step)
 
             # Append randomly selected coordinates to the coordinate list
             coord_list.append((new_w, new_h))
+
     # Regular dynamic or static pattern
     else:
         # If static, only one frame is generated

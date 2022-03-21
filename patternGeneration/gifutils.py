@@ -1,8 +1,6 @@
 import numpy, os, moviepy.editor
 
 """Saves a list of frames as a gif to the given output directory."""
-
-
 def save_frames_as_gif(
     frames: numpy.ndarray, output_dir: str, gif_name: str, fps: int = 10
 ) -> None:
@@ -17,7 +15,5 @@ def save_frames_as_gif(
 
 
 """Converts a list of arrays into a list of frames."""
-
-
 def frames_from_lists(lists: list) -> numpy.ndarray:
     return [numpy.array(_list, dtype=numpy.uint8) for _list in lists]

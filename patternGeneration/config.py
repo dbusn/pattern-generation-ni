@@ -2,7 +2,7 @@ import argparse
 # Modyfying some of these values may cause the generator to crash
 
 modulation: list = [60]
-total_time: list = [92, 392]
+total_time: list = [100, 400]
 fraction: float = 0.5
 phase_change: list = [0, 0.2, 0.4, 0.6, 0.8]
 
@@ -30,7 +30,7 @@ max_amp: int = 255
 # List of allowed maximum amplitudes
 amplitudes: list = [100, 255]
 
-
+# Initialize and return a parser object
 def initArgsParser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Generate dynamic patterns")
     parser.add_argument(
