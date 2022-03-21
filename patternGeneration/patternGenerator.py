@@ -11,13 +11,19 @@ import config
 import scipy.signal
 
 
-def process_amplitude_list(amplitude_list, coord_list, pho_freq, pathLike, static):
+def process_amplitude_list(amplitude_list, coord_list, pho_freq, pathLike, static, pattern_time):
     data = []
     motors = []
 
     # Number of actuators active in the pattern
     coord_no = len(coord_list)
 
+    # For backwards compatibility with the sleeve backend
+    n_coord_list = []
+    for coord in coord_list:
+        n_coord_list.append(int(str(coord[0]) + str(coord[1])))
+
+    coord_list = n_coord_list
     # Initialize a list of all available motors for non-path-like dynamic pattern generation
     if pathLike is False and static is False:
         # For each motor in the coordinate list
@@ -36,7 +42,7 @@ def process_amplitude_list(amplitude_list, coord_list, pho_freq, pathLike, stati
         # For each motor in the coordinate list 
         j = 0
         for i in range(len(amplitude_list)):
-            iteration = {"iteration": [], "time": 5}
+            iteration = {"iteration": [], "time": pattern_time}
             motor = {
                 "coord": coord_list[j],
                 "amplitude": amplitude_list[i],
@@ -62,14 +68,14 @@ def process_amplitude_list(amplitude_list, coord_list, pho_freq, pathLike, stati
 
             j = 0 if j == coord_no-1 else j + 1
 
-            iteration = {"iteration": [], "time": 5}
+            iteration = {"iteration": [], "time": pattern_time}
             for active_motor in motors:
                 iteration["iteration"].append(active_motor)
             data.append(iteration)
     # dynamic not path-like
     else:
         for _ in range(len(amplitude_list)):
-            iteration = {"iteration": [], "time": 5}
+            iteration = {"iteration": [], "time": pattern_time}
             # Choose k random motors that are active in an iteration
             active_motors = random.choices(motors, k=random.randint(1, len(motors)))
             for active_motor in active_motors:
@@ -106,6 +112,7 @@ def block_modulation(modulation_data: dict):
         modulation_data["freq"],
         modulation_data["path_like"],
         modulation_data["is_static"],
+        modulation_data["total_time"],
     )
     
 
@@ -122,6 +129,7 @@ def hanning_modulation(modulation_data: dict):
         modulation_data["freq"],
         modulation_data["path_like"],
         modulation_data["is_static"],
+        modulation_data["total_time"]
     )
 
 
@@ -152,6 +160,7 @@ def sawtooth_modulation(modulation_data: dict):
         modulation_data["freq"],
         modulation_data["path_like"],
         modulation_data["is_static"],
+        modulation_data["total_time"]
     )
 
 
@@ -185,6 +194,7 @@ def sin_modulation(modulation_data: dict):
         modulation_data["freq"],
         modulation_data["path_like"],
         modulation_data["is_static"],
+        modulation_data["total_time"]
     )
 
 
@@ -357,8 +367,8 @@ if __name__ == "__main__":
 
             for i, iteration in enumerate(iters):
                 for iter in iteration:
-                    col_coord = int(iter["coord"][0])
-                    row_coord = int(iter["coord"][1])
+                    col_coord = int(str(iter["coord"])[0])
+                    row_coord = int(str(iter["coord"])[1])
                     amp = iter["amplitude"]
                     grids[i][row_coord - 1][col_coord - 1] = [amp, amp, amp]
 
