@@ -351,10 +351,7 @@ if __name__ == "__main__":
     # Generate n patterns
     for n in range(args.n):
         all_waves = generate_pattern(pattern_conf)
-        if args.numpy is True:
-            np.save(f"numpy/p_{n+1}", all_waves)
 
-        # TODO don't generate gifs from json <- why not?
         json_pattern = {"pattern": all_waves}
         with open("json/" + "p_" + str(n + 1) + ".json", "w") as f:
             json.dump(json_pattern, f)
@@ -375,6 +372,10 @@ if __name__ == "__main__":
                     row_coord = int(str(iter["coord"])[1])
                     amp = iter["amplitude"]
                     grids[i][row_coord - 1][col_coord - 1] = [amp, amp, amp]
+
+            # Export to numpy
+            if args.numpy is True:
+                np.save(f"numpy/p_{n+1}", grids)
 
             gifutils.save_frames_as_gif(
                 gifutils.frames_from_lists(grids), "gifs", "p_" + str(n + 1)
