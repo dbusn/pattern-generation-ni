@@ -366,16 +366,24 @@ if __name__ == "__main__":
                 for _ in range(0, len(iters))
             ]
 
+            # For numpy
+            np_grid = [
+                [[0 for _ in range(0, 4)] for _ in range(0, 6)]
+                for _ in range(0, len(iters))
+            ]
+
             for i, iteration in enumerate(iters):
                 for iter in iteration:
                     col_coord = int(str(iter["coord"])[0])
                     row_coord = int(str(iter["coord"])[1])
                     amp = iter["amplitude"]
                     grids[i][row_coord - 1][col_coord - 1] = [amp, amp, amp]
+                    np_grid[i][row_coord - 1][col_coord - 1] = [amp]
+                    
 
             # Export to numpy
             if args.numpy is True:
-                np.save(f"numpy/p_{n+1}", grids)
+                np.save(f"numpy/p_{n+1}", np_grid)
 
             gifutils.save_frames_as_gif(
                 gifutils.frames_from_lists(grids), "gifs", "p_" + str(n + 1)
