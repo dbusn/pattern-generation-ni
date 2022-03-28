@@ -11,7 +11,7 @@ discretization_rate: int = 8
 
 # Number of actuators active during the execution of a pattern
 static_actuators_no: list = [x for x in range(1,9)]
-dynamic_actuators_no: list = [x for x in range(4,9)]
+dynamic_actuators_no: list = [8]
 
 # Grid dimensions
 # Gif conversion utility may require further adjustments if you want to change that
@@ -22,7 +22,7 @@ grid_width: int = 4
 frequency: list = [300]
 
 # Number of iterations for dynamic pattern
-patterns_no: list = [x for x in range(2, 8)]
+patterns_no: list = [8]
 
 # Maximal amplitude
 max_amp: int = 255

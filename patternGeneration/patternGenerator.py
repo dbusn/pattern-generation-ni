@@ -372,6 +372,7 @@ if __name__ == "__main__":
                 for _ in range(0, len(iters))
             ]
 
+
             for i, iteration in enumerate(iters):
                 for iter in iteration:
                     col_coord = int(str(iter["coord"])[0])
@@ -383,7 +384,9 @@ if __name__ == "__main__":
 
             # Export to numpy
             if args.numpy is True:
-                np.save(f"numpy/p_{n+1}", np_grid)
+                # Add one additional dimension as specified by Gilles
+                np_reshaped = np.reshape(np_grid, [1, 8, 6, 4])
+                np.save(f"numpy/p_{n+1}", np_reshaped)
 
             gifutils.save_frames_as_gif(
                 gifutils.frames_from_lists(grids), "gifs", "p_" + str(n + 1)
