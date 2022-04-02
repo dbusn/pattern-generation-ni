@@ -5,10 +5,14 @@ visil/
 ckpt/
 ckpt.zip
 
-# Generated gif, json and numpy files
+# Generated gif, json, numpy, zip files
 *.gif
 *.json
 *.npy
+*.zip
+
+# universal json binary
+*.ubj
 
 # My personal scripts
 *.fish
