@@ -10,8 +10,8 @@ phase_change: list = [0, 0.2, 0.4, 0.6, 0.8]
 discretization_rate: int = 8
 
 # Number of actuators active during the execution of a pattern
-static_actuators_no: list = [x for x in range(1,9)]
-dynamic_actuators_no: list = [8]
+static_actuators_no: list = [x for x in range(3,9)]
+dynamic_actuators_no: list = [x for x in range(3,8)]
 
 # Grid dimensions
 # Gif conversion utility may require further adjustments if you want to change that
@@ -22,7 +22,7 @@ grid_width: int = 4
 frequency: list = [300]
 
 # Number of iterations for dynamic pattern
-patterns_no: list = [8]
+patterns_no: list = [10]
 
 # Maximal amplitude
 max_amp: int = 255
@@ -31,7 +31,7 @@ max_amp: int = 255
 amplitudes: list = [100, 255]
 
 # Initialize and return a parser object
-def initArgsParser() -> argparse.ArgumentParser:
+def init_argsparser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Generate dynamic patterns")
     parser.add_argument(
         "-n", type=int, nargs='?', help="number of patterns to generate", required=True
