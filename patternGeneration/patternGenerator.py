@@ -12,9 +12,15 @@ import random
 import scipy
 import config
 import scipy.signal
+import time
+
+# TODO implement support universal json binary support
+# import pyubjson
 
 
-def process_amplitude_list(amplitude_list, coord_list, pho_freq, path_like, static, total_pattern_time):
+def process_amplitude_list(
+    amplitude_list, coord_list, pho_freq, path_like, static, total_pattern_time
+):
     data = []
     motors = []
 
@@ -30,7 +36,6 @@ def process_amplitude_list(amplitude_list, coord_list, pho_freq, path_like, stat
 
     # Defines how long should one iteration last
     pattern_time = total_pattern_time / len(coord_list)
-    
 
     # Initialize a list of all available motors for non-path-like dynamic pattern generation
     if path_like is False and static is False:
@@ -47,7 +52,7 @@ def process_amplitude_list(amplitude_list, coord_list, pho_freq, path_like, stat
 
     # Path-like pattern generation
     if path_like is True:
-        # For each amplitude in the amplitude list 
+        # For each amplitude in the amplitude list
         j = 0
         for i in range(len(amplitude_list)):
             iteration = {"iteration": [], "time": pattern_time}
@@ -60,10 +65,10 @@ def process_amplitude_list(amplitude_list, coord_list, pho_freq, path_like, stat
             data.append(iteration)
 
             j += 1
-            if j == coord_no-1:
+            if j == coord_no - 1:
                 j = 0
 
-    # Static pattern            
+    # Static pattern
     elif static is True:
         motors = []
         # Append all the motors
@@ -88,7 +93,7 @@ def process_amplitude_list(amplitude_list, coord_list, pho_freq, path_like, stat
             # Choose k random motors that are active in an iteration
             active_motors = random.choices(motors, k=random.randint(1, len(motors)))
             for active_motor in active_motors:
-                    iteration["iteration"].append(active_motor)
+                iteration["iteration"].append(active_motor)
             data.append(iteration)
 
     return data
@@ -123,7 +128,6 @@ def block_modulation(modulation_data: dict):
         modulation_data["is_static"],
         modulation_data["total_time"],
     )
-    
 
 
 def hanning_modulation(modulation_data: dict):
@@ -138,7 +142,7 @@ def hanning_modulation(modulation_data: dict):
         modulation_data["freq"],
         modulation_data["path_like"],
         modulation_data["is_static"],
-        modulation_data["total_time"]
+        modulation_data["total_time"],
     )
 
 
@@ -169,7 +173,7 @@ def sawtooth_modulation(modulation_data: dict):
         modulation_data["freq"],
         modulation_data["path_like"],
         modulation_data["is_static"],
-        modulation_data["total_time"]
+        modulation_data["total_time"],
     )
 
 
@@ -184,7 +188,6 @@ def sin_modulation(modulation_data: dict):
     time = modulation_data["total_time"] / 1000
     start = 0
     stop = time
-
 
     # Step aka number of frames
     step = 80 if modulation_data["total_time"] == 400 else 24
@@ -203,7 +206,7 @@ def sin_modulation(modulation_data: dict):
         modulation_data["freq"],
         modulation_data["path_like"],
         modulation_data["is_static"],
-        modulation_data["total_time"]
+        modulation_data["total_time"],
     )
 
 
@@ -211,7 +214,11 @@ def generate_pattern(pattern_conf: dict) -> list:
     coord_list = []
     all_waves = []
 
-    n_actuators = random.choice(config.static_actuators_no) if pattern_conf["isStatic"] is True else random.choice(config.dynamic_actuators_no)
+    n_actuators = (
+        random.choice(config.static_actuators_no)
+        if pattern_conf["isStatic"] is True
+        else random.choice(config.dynamic_actuators_no)
+    )
 
     if pattern_conf["isPathLike"] is True:
         if len(coord_list) == 0:
@@ -222,7 +229,6 @@ def generate_pattern(pattern_conf: dict) -> list:
                 )
             ]
 
-        
         step = 2 if pattern_conf["isStridden"] is True else 1
 
         # Select which actuators are active
@@ -243,7 +249,12 @@ def generate_pattern(pattern_conf: dict) -> list:
             if last_w == config.grid_width or last_w == config.grid_width - 1:
                 new_w = random.choice([random.randint(last_w - step, last_w), step])
             elif last_w == 1 or last_w == 2:
-                new_w = random.choice([random.randint(last_w, last_w + step), config.grid_width + 1 - step])
+                new_w = random.choice(
+                    [
+                        random.randint(last_w, last_w + step),
+                        config.grid_width + 1 - step,
+                    ]
+                )
             else:
                 new_w = random.randint(last_w - step, last_w + step)
 
@@ -254,7 +265,9 @@ def generate_pattern(pattern_conf: dict) -> list:
     else:
         # If static, only one frame is generated
         # Otherwise select randomly from config
-        patterns_no = 1 if pattern_conf["isStatic"] is True else random.choice(config.patterns_no)
+        patterns_no = (
+            1 if pattern_conf["isStatic"] is True else random.choice(config.patterns_no)
+        )
 
         # Generate coordinates list
         for _ in range(patterns_no):
@@ -347,22 +360,23 @@ if __name__ == "__main__":
     }
 
     # If no json/ directory is found, create it
-    if not os.path.exists('json'):
-        os.mkdir('json')
+    if not os.path.exists("json"):
+        os.mkdir("json")
 
-    if args.numpy is True and os.path.exists('numpy') is False:
-        os.mkdir('numpy')
+    if args.numpy is True and os.path.exists("numpy") is False:
+        os.mkdir("numpy")
 
     # Generate n patterns
     for n in range(args.n):
+        generation_time = str(time.time()).replace(".", "")
         all_waves = generate_pattern(pattern_conf)
 
         json_pattern = {"pattern": all_waves}
-        with open("json/" + "p_" + str(n + 1) + ".json", "w") as f:
+        with open("json/" + "p_" + generation_time + ".json", "w") as f:
             json.dump(json_pattern, f)
 
         if args.jsonOnly is False:
-            with open("json/" + "p_" + str(n + 1) + ".json", "r") as f:
+            with open("json/" + "p_" + generation_time + ".json", "r") as f:
                 json_pattern = json.load(f)
 
             iters = [iteration["iteration"] for iteration in json_pattern["pattern"]]
@@ -377,7 +391,6 @@ if __name__ == "__main__":
                 for _ in range(0, len(iters))
             ]
 
-
             for i, iteration in enumerate(iters):
                 for motor_data in iteration:
                     col_coord = int(str(motor_data["coord"])[0])
@@ -385,14 +398,12 @@ if __name__ == "__main__":
                     amp = motor_data["amplitude"]
                     grids[i][row_coord - 1][col_coord - 1] = [amp, amp, amp]
                     np_grid[i][row_coord - 1][col_coord - 1] = amp
-                    
 
             # Export to numpy
             if args.numpy is True:
                 # Add one additional dimension as specified by Gilles
-                np_reshaped = [np_grid]
-                np.save(f"numpy/p_{n+1}", np_reshaped)
+                np.save(f"numpy/p_{generation_time}", [np_grid])
 
             gifutils.save_frames_as_gif(
-                gifutils.frames_from_lists(grids), "gifs", "p_" + str(n + 1)
+                gifutils.frames_from_lists(grids), "gifs", "p_" + generation_time
             )
