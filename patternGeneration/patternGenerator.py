@@ -385,7 +385,7 @@ if __name__ == "__main__":
 
         # Generate ubjson binaries if requested
         if args.ubjson is True:
-            with open("ubjson/" + "p_" + gen_timestamp + ".ubj", "w") as f:
+            with open("ubjson/" + "p_" + gen_timestamp + ".ubj", "wb") as f:
                 ubjson.dump(json_pattern, f)
 
         # Generate only numpy/gif files
