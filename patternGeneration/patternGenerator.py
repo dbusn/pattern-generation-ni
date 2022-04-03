@@ -1,5 +1,5 @@
-# patternGenerator.py version 1.0
-# 02/04/2020
+# patternGenerator.py version 1.1
+# 03/04/2020
 
 # Functions to create patterns for phonemes
 # Imports
@@ -9,14 +9,11 @@ import numpy as np
 import gifutils
 import json
 import random
-import scipy
 import config
-import scipy.signal
 import time
-
-# TODO implement support universal json binary support
-# import pyubjson
-
+import parser
+import ubjson
+import scipy.signal
 
 def process_amplitude_list(
     amplitude_list, coord_list, pho_freq, path_like, static, total_pattern_time
@@ -97,7 +94,6 @@ def process_amplitude_list(
             data.append(iteration)
 
     return data
-
 
 def block_modulation(modulation_data: dict):
     # Note that we assume a block function y = 1 if 0 <= x < period, -1 if period < x < 2*period
@@ -210,6 +206,37 @@ def sin_modulation(modulation_data: dict):
     )
 
 
+def gen_pathlike_coords(step: int, coord_list: list, n_actuators: int) -> list:
+    # Select which actuators are active
+    for _ in range(n_actuators):
+        # Get the last pair of coordinates
+        last_w = coord_list[-1:][0][0]
+        last_h = coord_list[-1:][0][1]
+
+        # Row selection
+        if last_h == config.grid_height or last_h == config.grid_height - 1:
+            new_h = random.choice([last_h - step, last_h])
+        elif last_h == 1 or last_h == 2:
+            new_h = random.choice([last_h, last_h + step])
+        else:
+            new_h = random.choice([last_h - step, last_h + step])
+
+        # Column selection
+        if last_w == config.grid_width or last_w == config.grid_width - 1:
+            new_w = random.choice([random.randint(last_w - step, last_w), step])
+        elif last_w == 1 or last_w == 2:
+            new_w = random.choice(
+                [random.randint(last_w, last_w + step), config.grid_width + 1 - step,]
+            )
+        else:
+            new_w = random.randint(last_w - step, last_w + step)
+
+        # Append randomly selected coordinates to the coordinate list
+        coord_list.append((new_w, new_h))
+
+    return coord_list
+
+
 def generate_pattern(pattern_conf: dict) -> list:
     coord_list = []
     all_waves = []
@@ -232,38 +259,13 @@ def generate_pattern(pattern_conf: dict) -> list:
         step = 2 if pattern_conf["isStridden"] is True else 1
 
         # Select which actuators are active
-        for _ in range(n_actuators):
-            # Get the last pair of coordinates
-            last_w = coord_list[-1:][0][0]
-            last_h = coord_list[-1:][0][1]
-
-            # Row selection
-            if last_h == config.grid_height or last_h == config.grid_height - 1:
-                new_h = random.choice([last_h - step, last_h])
-            elif last_h == 1 or last_h == 2:
-                new_h = random.choice([last_h, last_h + step])
-            else:
-                new_h = random.choice([last_h - step, last_h + step])
-
-            # Column selection
-            if last_w == config.grid_width or last_w == config.grid_width - 1:
-                new_w = random.choice([random.randint(last_w - step, last_w), step])
-            elif last_w == 1 or last_w == 2:
-                new_w = random.choice(
-                    [
-                        random.randint(last_w, last_w + step),
-                        config.grid_width + 1 - step,
-                    ]
-                )
-            else:
-                new_w = random.randint(last_w - step, last_w + step)
-
-            # Append randomly selected coordinates to the coordinate list
-            coord_list.append((new_w, new_h))
+        coord_list = gen_pathlike_coords(
+            step=step, coord_list=coord_list, n_actuators=n_actuators
+        )
 
     # Regular dynamic or static pattern
     else:
-        # If static, only one frame is generated
+        # If static, only one configuration is generated
         # Otherwise select randomly from config
         patterns_no = (
             1 if pattern_conf["isStatic"] is True else random.choice(config.patterns_no)
@@ -317,8 +319,8 @@ def generate_pattern(pattern_conf: dict) -> list:
 
 
 if __name__ == "__main__":
-    parser = config.init_argsparser()
-    args = parser.parse_args()
+    arg_parser = parser.init_argsparser()
+    args = arg_parser.parse_args()
 
     # Checks for mutually exclusive arguments
     # If both pathLike and static patterns are selected
@@ -360,32 +362,46 @@ if __name__ == "__main__":
     }
 
     # If no json/ directory is found, create it
+    # Same for numpy/ and ubjson/
     if not os.path.exists("json"):
         os.mkdir("json")
 
     if args.numpy is True and os.path.exists("numpy") is False:
         os.mkdir("numpy")
 
+    
+    if args.ubjson is True and os.path.exists("ubjson") is False:
+        os.mkdir("ubjson")
+
     # Generate n patterns
     for n in range(args.n):
-        generation_time = str(time.time()).replace(".", "")
+        gen_timestamp = str(time.time()).replace(".", "")
         all_waves = generate_pattern(pattern_conf)
 
+        # Write to json file
         json_pattern = {"pattern": all_waves}
-        with open("json/" + "p_" + generation_time + ".json", "w") as f:
+        with open("json/" + "p_" + gen_timestamp + ".json", "w") as f:
             json.dump(json_pattern, f)
 
+        # Generate ubjson binaries if requested
+        if args.ubjson is True:
+            with open("ubjson/" + "p_" + gen_timestamp + ".ubj", "w") as f:
+                ubjson.dump(json_pattern, f)
+
+        # Generate only numpy/gif files
         if args.jsonOnly is False:
-            with open("json/" + "p_" + generation_time + ".json", "r") as f:
+            with open("json/" + "p_" + gen_timestamp + ".json", "r") as f:
                 json_pattern = json.load(f)
 
             iters = [iteration["iteration"] for iteration in json_pattern["pattern"]]
+
+            # Generate a numpy grid for gif generation
             grids = [
                 [[[0, 0, 0] for _ in range(0, 4)] for _ in range(0, 6)]
                 for _ in range(0, len(iters))
             ]
 
-            # For numpy
+            # Generate numpy array for numpy output
             np_grid = [
                 [[0 for _ in range(0, 4)] for _ in range(0, 6)]
                 for _ in range(0, len(iters))
@@ -402,8 +418,8 @@ if __name__ == "__main__":
             # Export to numpy
             if args.numpy is True:
                 # Add one additional dimension as specified by Gilles
-                np.save(f"numpy/p_{generation_time}", [np_grid])
+                np.save(f"numpy/p_{gen_timestamp}", [np_grid])
 
             gifutils.save_frames_as_gif(
-                gifutils.frames_from_lists(grids), "gifs", "p_" + generation_time
+                gifutils.frames_from_lists(grids), "gifs", "p_" + gen_timestamp
             )
