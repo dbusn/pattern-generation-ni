@@ -8,10 +8,10 @@ def init_argsparser() -> argparse.ArgumentParser:
     )
 
     parser.add_argument(
-        "--ubjson",
+        "--cbor",
         default=False,
         action="store_true",
-        help="additionaly generate ubjson files for future communication with the sleeve",
+        help="generate optional cbor binaries for faster communication with the sleeve",
         required=False,
     )
 

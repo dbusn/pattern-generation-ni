@@ -14,6 +14,9 @@ ckpt.zip
 # universal json binary
 *.ubj
 
+# CBOR binaries
+*.cbor
+
 # My personal scripts
 *.fish
 

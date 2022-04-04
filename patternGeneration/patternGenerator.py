@@ -12,7 +12,7 @@ import random
 import config
 import time
 import parser
-import ubjson
+import cbor2 as cbor
 import scipy.signal
 
 def process_amplitude_list(
@@ -362,7 +362,7 @@ if __name__ == "__main__":
     }
 
     # If no json/ directory is found, create it
-    # Same for numpy/ and ubjson/
+    # Same for numpy/ and cbor/
     if not os.path.exists("json"):
         os.mkdir("json")
 
@@ -370,8 +370,8 @@ if __name__ == "__main__":
         os.mkdir("numpy")
 
     
-    if args.ubjson is True and os.path.exists("ubjson") is False:
-        os.mkdir("ubjson")
+    if args.cbor is True and os.path.exists("cbor") is False:
+        os.mkdir("cbor")
 
     # Generate n patterns
     for n in range(args.n):
@@ -383,10 +383,10 @@ if __name__ == "__main__":
         with open("json/" + "p_" + gen_timestamp + ".json", "w") as f:
             json.dump(json_pattern, f)
 
-        # Generate ubjson binaries if requested
-        if args.ubjson is True:
-            with open("ubjson/" + "p_" + gen_timestamp + ".ubj", "wb") as f:
-                ubjson.dump(json_pattern, f)
+        # Generate cbor binaries if requested
+        if args.cbor is True:
+            with open("cbor/" + "p_" + gen_timestamp + ".cbor", "wb") as f:
+                cbor.dump(json_pattern, f)
 
         # Generate only numpy/gif files
         if args.jsonOnly is False:
