@@ -2,7 +2,7 @@ import numpy, os, moviepy.editor
 
 """Saves a list of frames as a gif to the given output directory."""
 def save_frames_as_gif(
-    frames: numpy.ndarray, output_dir: str, gif_name: str, fps: int = 10
+    frames: numpy.ndarray, output_dir: str, gif_name: str, fps: int = 8
 ) -> None:
 
     # If the output dir does not exist, create it

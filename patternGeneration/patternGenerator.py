@@ -1,3 +1,6 @@
+# patternGenerator.py version 1.0
+# 02/04/2020
+
 # Functions to create patterns for phonemes
 # Imports
 import os
@@ -11,32 +14,43 @@ import config
 import scipy.signal
 
 
-def process_amplitude_list(amplitude_list, coord_list, pho_freq, pathLike, static):
+def process_amplitude_list(amplitude_list, coord_list, pho_freq, path_like, static, total_pattern_time):
     data = []
     motors = []
 
     # Number of actuators active in the pattern
     coord_no = len(coord_list)
 
+    # For backwards compatibility with the sleeve backend we merge the coordinates into one number
+    # e.g. [1,3] = [13]
+    new_coord_list = []
+    for coord in coord_list:
+        new_coord_list.append(int(str(coord[0]) + str(coord[1])))
+    coord_list = new_coord_list
+
+    # Defines how long should one iteration last
+    pattern_time = total_pattern_time / len(coord_list)
+    
+
     # Initialize a list of all available motors for non-path-like dynamic pattern generation
-    if pathLike is False and static is False:
+    if path_like is False and static is False:
         # For each motor in the coordinate list
         for i in range(coord_no):
             # Append to the list of active motors
             motors.append(
                 {
                     "coord": coord_list[i],
-                    "amplitude": random.choice(amplitude_list),
+                    "amplitude": amplitude_list[i],
                     "frequency": pho_freq,
                 }
             )
 
     # Path-like pattern generation
-    if pathLike is True:
-        # For each motor in the coordinate list 
+    if path_like is True:
+        # For each amplitude in the amplitude list 
         j = 0
         for i in range(len(amplitude_list)):
-            iteration = {"iteration": [], "time": 5}
+            iteration = {"iteration": [], "time": pattern_time}
             motor = {
                 "coord": coord_list[j],
                 "amplitude": amplitude_list[i],
@@ -45,31 +59,32 @@ def process_amplitude_list(amplitude_list, coord_list, pho_freq, pathLike, stati
             iteration["iteration"].append(motor)
             data.append(iteration)
 
-            j = 0 if j == coord_no-1 else j + 1
+            j += 1
+            if j == coord_no-1:
+                j = 0
+
     # Static pattern            
     elif static is True:
         motors = []
         # Append all the motors
         j = 0
-        for i in range(len(amplitude_list)):
+        for i in range(len(coord_list)):
             motors.append(
                 {
-                    "coord": coord_list[j],
+                    "coord": coord_list[i],
                     "amplitude": amplitude_list[i],
                     "frequency": pho_freq,
                 }
             )
 
-            j = 0 if j == coord_no-1 else j + 1
-
-            iteration = {"iteration": [], "time": 5}
+            iteration = {"iteration": [], "time": pattern_time}
             for active_motor in motors:
                 iteration["iteration"].append(active_motor)
             data.append(iteration)
     # dynamic not path-like
     else:
-        for _ in range(len(amplitude_list)):
-            iteration = {"iteration": [], "time": 5}
+        for _ in range(len(coord_list)):
+            iteration = {"iteration": [], "time": pattern_time}
             # Choose k random motors that are active in an iteration
             active_motors = random.choices(motors, k=random.randint(1, len(motors)))
             for active_motor in active_motors:
@@ -98,7 +113,7 @@ def block_modulation(modulation_data: dict):
     for i in range(len(x)):
         sign = 1 if (x[i] % 2 * period < period) else -1
 
-        amplitude_list.append((int)(a * sign))
+        amplitude_list.append(int(a * sign))
 
     return process_amplitude_list(
         amplitude_list,
@@ -106,6 +121,7 @@ def block_modulation(modulation_data: dict):
         modulation_data["freq"],
         modulation_data["path_like"],
         modulation_data["is_static"],
+        modulation_data["total_time"],
     )
     
 
@@ -122,6 +138,7 @@ def hanning_modulation(modulation_data: dict):
         modulation_data["freq"],
         modulation_data["path_like"],
         modulation_data["is_static"],
+        modulation_data["total_time"]
     )
 
 
@@ -152,6 +169,7 @@ def sawtooth_modulation(modulation_data: dict):
         modulation_data["freq"],
         modulation_data["path_like"],
         modulation_data["is_static"],
+        modulation_data["total_time"]
     )
 
 
@@ -168,15 +186,15 @@ def sin_modulation(modulation_data: dict):
     stop = time
 
 
-    # Step aka number of frames (TOFIX in path-like patterns)
-    step = 80 if modulation_data["total_time"] == 400 else 23
+    # Step aka number of frames
+    step = 80 if modulation_data["total_time"] == 400 else 24
     x = np.linspace(start, stop, step)
 
     # Create amplitude list
     amplitude_list = []
     for i in range(len(x)):
         amplitude_list.append(
-            (int)(A * np.sin(B * (x[i] - modulation_data["phase_change"])) + D)
+            int(A * np.sin(B * (x[i] - modulation_data["phase_change"])) + D)
         )
 
     return process_amplitude_list(
@@ -185,6 +203,7 @@ def sin_modulation(modulation_data: dict):
         modulation_data["freq"],
         modulation_data["path_like"],
         modulation_data["is_static"],
+        modulation_data["total_time"]
     )
 
 
@@ -285,7 +304,7 @@ def generate_pattern(pattern_conf: dict) -> list:
 
 
 if __name__ == "__main__":
-    parser = config.initArgsParser()
+    parser = config.init_argsparser()
     args = parser.parse_args()
 
     # Checks for mutually exclusive arguments
@@ -337,10 +356,7 @@ if __name__ == "__main__":
     # Generate n patterns
     for n in range(args.n):
         all_waves = generate_pattern(pattern_conf)
-        if args.numpy is True:
-            np.save(f"numpy/p_{n+1}", all_waves)
 
-        # TODO don't generate gifs from json <- why not?
         json_pattern = {"pattern": all_waves}
         with open("json/" + "p_" + str(n + 1) + ".json", "w") as f:
             json.dump(json_pattern, f)
@@ -355,12 +371,27 @@ if __name__ == "__main__":
                 for _ in range(0, len(iters))
             ]
 
+            # For numpy
+            np_grid = [
+                [[0 for _ in range(0, 4)] for _ in range(0, 6)]
+                for _ in range(0, len(iters))
+            ]
+
+
             for i, iteration in enumerate(iters):
-                for iter in iteration:
-                    col_coord = int(iter["coord"][0])
-                    row_coord = int(iter["coord"][1])
-                    amp = iter["amplitude"]
+                for motor_data in iteration:
+                    col_coord = int(str(motor_data["coord"])[0])
+                    row_coord = int(str(motor_data["coord"])[1])
+                    amp = motor_data["amplitude"]
                     grids[i][row_coord - 1][col_coord - 1] = [amp, amp, amp]
+                    np_grid[i][row_coord - 1][col_coord - 1] = amp
+                    
+
+            # Export to numpy
+            if args.numpy is True:
+                # Add one additional dimension as specified by Gilles
+                np_reshaped = [np_grid]
+                np.save(f"numpy/p_{n+1}", np_reshaped)
 
             gifutils.save_frames_as_gif(
                 gifutils.frames_from_lists(grids), "gifs", "p_" + str(n + 1)

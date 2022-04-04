@@ -1,4 +1,5 @@
 # pattern-generation-ni
+**v1.0**
 
 ### Prerequisites
 Make sure that all the packages listed in `requirements.txt` are installed. To do so, run ```pip install -r requirements.txt``` if you use pip and ```conda install --file requirements.txt``` if you use conda or miniconda. Keep in mind that in order to run code from the notebook you may need to install additional packages.
@@ -29,3 +30,12 @@ If you have JSON pattern files generated using an external tool, you may want to
 Once all the json files are in `json2gif` directory  run ```bash convert2Gif.bash``` script to output all the GIFs into a GIFS/ subdirectory.
 * **Windows:**
 The same procedure applies but execute ```.\convert2Gif.ps1``` using powershell.
+
+### Versioning and branches:
+There are two main branches: `main` and `unstable`. Please make sure to push your changes to unstable only and merge the branches only if you create a new stable release. 
+
+This project follows these versioning rules:
+
+**3**.0 - Major release, may include backwards-compatability breaking changes
+
+3.**1** - Minor release, tweakes, fixes etc. without backwards-compatability breaking changes
