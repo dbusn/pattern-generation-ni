@@ -1,5 +1,5 @@
 # pattern-generation-ni
-**v1.0**
+**v1.1**
 
 ### Prerequisites
 Make sure that all the packages listed in `requirements.txt` are installed. To do so, run ```pip install -r requirements.txt``` if you use pip and ```conda install --file requirements.txt``` if you use conda or miniconda. Keep in mind that in order to run code from the notebook you may need to install additional packages.
@@ -11,7 +11,7 @@ The `pattern-gen.ipynb` notebook contains code to run Simulated Annealing and ge
 Proceed to dynamicGeneration directory and run ```python dynamicGenerator.py -h``` to learn how to generate dynamic patterns.
 
 List of parameters:
-|Param        |Type   	|Description
+|Param        |Arg Type	|Description
 |---        	|---	    |---
 |n       	    |int      |Number of patterns to generate; required
 |pathLike   	|None  	  |Generate path-like patterns
@@ -22,6 +22,7 @@ List of parameters:
 |sawtooth   	|None   	|Generate patterns with sawtooth modulation
 |numpy      	|None   	|Export patterns to a numpy array (default=False)
 |jsonOnly   	|None     |Generate only json files
+|cbor         |None     |Generate optional CBOR binaries
 
 ### Conversion to GIF
 Patterns created by patternGenerator are automatically converted to gif files. If you want to keep only the json files, run dynamicGenerator with `--jsonOnly` flag
