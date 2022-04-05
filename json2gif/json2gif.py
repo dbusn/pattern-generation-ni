@@ -8,7 +8,7 @@ if __name__ == "__main__":
 
     iters = [iteration["iteration"] for iteration in json_pattern["pattern"]]
     grids = [
-        [[[255, 255, 255] for _ in range(0, 4)] for _ in range(0, 6)]
+        [[[0, 0, 0] for _ in range(0, 4)] for _ in range(0, 6)]
         for _ in range(0, len(iters))
     ]
 
