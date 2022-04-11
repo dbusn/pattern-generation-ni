@@ -70,10 +70,10 @@ def process_amplitude_list(
         motors = []
         # Append all the motors
         j = 0
-        for i in range(len(coord_list)):
+        for i in range(len(amplitude_list)):
             motors.append(
                 {
-                    "coord": coord_list[i],
+                    "coord": coord_list[j],
                     "amplitude": amplitude_list[i],
                     "frequency": pho_freq,
                 }
@@ -83,12 +83,19 @@ def process_amplitude_list(
             for active_motor in motors:
                 iteration["iteration"].append(active_motor)
             data.append(iteration)
+
+            j += 1
+            if j == coord_no - 1:
+                j = 0
+
     # dynamic not path-like
     else:
-        for _ in range(len(coord_list)):
+        for _ in range(len(amplitude_list)):
             iteration = {"iteration": [], "time": pattern_time}
+
             # Choose k random motors that are active in an iteration
             active_motors = random.choices(motors, k=random.randint(1, len(motors)))
+            
             for active_motor in active_motors:
                 iteration["iteration"].append(active_motor)
             data.append(iteration)
