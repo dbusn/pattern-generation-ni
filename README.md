@@ -1,5 +1,5 @@
 # pattern-generation-ni
-**v1.1**
+**v1.2**
 
 ### Prerequisites
 Make sure that all the packages listed in `requirements.txt` are installed. To do so, run ```pip install -r requirements.txt``` if you use pip and ```conda install --file requirements.txt``` if you use conda or miniconda. Keep in mind that in order to run code from the notebook you may need to install additional packages.
