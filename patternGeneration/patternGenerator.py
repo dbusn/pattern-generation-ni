@@ -1,5 +1,5 @@
-# patternGenerator.py version 1.0
-# 02/04/2020
+# patternGenerator.py version 1.1
+# 03/04/2020
 
 # Functions to create patterns for phonemes
 # Imports
@@ -9,12 +9,15 @@ import numpy as np
 import gifutils
 import json
 import random
-import scipy
 import config
+import time
+import parser
+import cbor2 as cbor
 import scipy.signal
 
-
-def process_amplitude_list(amplitude_list, coord_list, pho_freq, path_like, static, total_pattern_time):
+def process_amplitude_list(
+    amplitude_list, coord_list, pho_freq, path_like, static, total_pattern_time
+):
     data = []
     motors = []
 
@@ -30,7 +33,6 @@ def process_amplitude_list(amplitude_list, coord_list, pho_freq, path_like, stat
 
     # Defines how long should one iteration last
     pattern_time = total_pattern_time / len(coord_list)
-    
 
     # Initialize a list of all available motors for non-path-like dynamic pattern generation
     if path_like is False and static is False:
@@ -47,7 +49,7 @@ def process_amplitude_list(amplitude_list, coord_list, pho_freq, path_like, stat
 
     # Path-like pattern generation
     if path_like is True:
-        # For each amplitude in the amplitude list 
+        # For each amplitude in the amplitude list
         j = 0
         for i in range(len(amplitude_list)):
             iteration = {"iteration": [], "time": pattern_time}
@@ -60,10 +62,10 @@ def process_amplitude_list(amplitude_list, coord_list, pho_freq, path_like, stat
             data.append(iteration)
 
             j += 1
-            if j == coord_no-1:
+            if j == coord_no - 1:
                 j = 0
 
-    # Static pattern            
+    # Static pattern
     elif static is True:
         motors = []
         # Append all the motors
@@ -88,11 +90,10 @@ def process_amplitude_list(amplitude_list, coord_list, pho_freq, path_like, stat
             # Choose k random motors that are active in an iteration
             active_motors = random.choices(motors, k=random.randint(1, len(motors)))
             for active_motor in active_motors:
-                    iteration["iteration"].append(active_motor)
+                iteration["iteration"].append(active_motor)
             data.append(iteration)
 
     return data
-
 
 def block_modulation(modulation_data: dict):
     # Note that we assume a block function y = 1 if 0 <= x < period, -1 if period < x < 2*period
@@ -123,7 +124,6 @@ def block_modulation(modulation_data: dict):
         modulation_data["is_static"],
         modulation_data["total_time"],
     )
-    
 
 
 def hanning_modulation(modulation_data: dict):
@@ -138,7 +138,7 @@ def hanning_modulation(modulation_data: dict):
         modulation_data["freq"],
         modulation_data["path_like"],
         modulation_data["is_static"],
-        modulation_data["total_time"]
+        modulation_data["total_time"],
     )
 
 
@@ -169,7 +169,7 @@ def sawtooth_modulation(modulation_data: dict):
         modulation_data["freq"],
         modulation_data["path_like"],
         modulation_data["is_static"],
-        modulation_data["total_time"]
+        modulation_data["total_time"],
     )
 
 
@@ -184,7 +184,6 @@ def sin_modulation(modulation_data: dict):
     time = modulation_data["total_time"] / 1000
     start = 0
     stop = time
-
 
     # Step aka number of frames
     step = 80 if modulation_data["total_time"] == 400 else 24
@@ -203,15 +202,50 @@ def sin_modulation(modulation_data: dict):
         modulation_data["freq"],
         modulation_data["path_like"],
         modulation_data["is_static"],
-        modulation_data["total_time"]
+        modulation_data["total_time"],
     )
+
+
+def gen_pathlike_coords(step: int, coord_list: list, n_actuators: int) -> list:
+    # Select which actuators are active
+    for _ in range(n_actuators):
+        # Get the last pair of coordinates
+        last_w = coord_list[-1:][0][0]
+        last_h = coord_list[-1:][0][1]
+
+        # Row selection
+        if last_h == config.grid_height or last_h == config.grid_height - 1:
+            new_h = random.choice([last_h - step, last_h])
+        elif last_h == 1 or last_h == 2:
+            new_h = random.choice([last_h, last_h + step])
+        else:
+            new_h = random.choice([last_h - step, last_h + step])
+
+        # Column selection
+        if last_w == config.grid_width or last_w == config.grid_width - 1:
+            new_w = random.choice([random.randint(last_w - step, last_w), step])
+        elif last_w == 1 or last_w == 2:
+            new_w = random.choice(
+                [random.randint(last_w, last_w + step), config.grid_width + 1 - step,]
+            )
+        else:
+            new_w = random.randint(last_w - step, last_w + step)
+
+        # Append randomly selected coordinates to the coordinate list
+        coord_list.append((new_w, new_h))
+
+    return coord_list
 
 
 def generate_pattern(pattern_conf: dict) -> list:
     coord_list = []
     all_waves = []
 
-    n_actuators = random.choice(config.static_actuators_no) if pattern_conf["isStatic"] is True else random.choice(config.dynamic_actuators_no)
+    n_actuators = (
+        random.choice(config.static_actuators_no)
+        if pattern_conf["isStatic"] is True
+        else random.choice(config.dynamic_actuators_no)
+    )
 
     if pattern_conf["isPathLike"] is True:
         if len(coord_list) == 0:
@@ -222,39 +256,20 @@ def generate_pattern(pattern_conf: dict) -> list:
                 )
             ]
 
-        
         step = 2 if pattern_conf["isStridden"] is True else 1
 
         # Select which actuators are active
-        for _ in range(n_actuators):
-            # Get the last pair of coordinates
-            last_w = coord_list[-1:][0][0]
-            last_h = coord_list[-1:][0][1]
-
-            # Row selection
-            if last_h == config.grid_height or last_h == config.grid_height - 1:
-                new_h = random.choice([last_h - step, last_h])
-            elif last_h == 1 or last_h == 2:
-                new_h = random.choice([last_h, last_h + step])
-            else:
-                new_h = random.choice([last_h - step, last_h + step])
-
-            # Column selection
-            if last_w == config.grid_width or last_w == config.grid_width - 1:
-                new_w = random.choice([random.randint(last_w - step, last_w), step])
-            elif last_w == 1 or last_w == 2:
-                new_w = random.choice([random.randint(last_w, last_w + step), config.grid_width + 1 - step])
-            else:
-                new_w = random.randint(last_w - step, last_w + step)
-
-            # Append randomly selected coordinates to the coordinate list
-            coord_list.append((new_w, new_h))
+        coord_list = gen_pathlike_coords(
+            step=step, coord_list=coord_list, n_actuators=n_actuators
+        )
 
     # Regular dynamic or static pattern
     else:
-        # If static, only one frame is generated
+        # If static, only one configuration is generated
         # Otherwise select randomly from config
-        patterns_no = 1 if pattern_conf["isStatic"] is True else random.choice(config.patterns_no)
+        patterns_no = (
+            1 if pattern_conf["isStatic"] is True else random.choice(config.patterns_no)
+        )
 
         # Generate coordinates list
         for _ in range(patterns_no):
@@ -304,8 +319,8 @@ def generate_pattern(pattern_conf: dict) -> list:
 
 
 if __name__ == "__main__":
-    parser = config.init_argsparser()
-    args = parser.parse_args()
+    arg_parser = parser.init_argsparser()
+    args = arg_parser.parse_args()
 
     # Checks for mutually exclusive arguments
     # If both pathLike and static patterns are selected
@@ -347,36 +362,50 @@ if __name__ == "__main__":
     }
 
     # If no json/ directory is found, create it
-    if not os.path.exists('json'):
-        os.mkdir('json')
+    # Same for numpy/ and cbor/
+    if not os.path.exists("json"):
+        os.mkdir("json")
 
-    if args.numpy is True and os.path.exists('numpy') is False:
-        os.mkdir('numpy')
+    if args.numpy is True and os.path.exists("numpy") is False:
+        os.mkdir("numpy")
+
+    
+    if args.cbor is True and os.path.exists("cbor") is False:
+        os.mkdir("cbor")
 
     # Generate n patterns
     for n in range(args.n):
+        gen_timestamp = str(time.time()).replace(".", "")
         all_waves = generate_pattern(pattern_conf)
 
+        # Write to json file
         json_pattern = {"pattern": all_waves}
-        with open("json/" + "p_" + str(n + 1) + ".json", "w") as f:
+        with open("json/" + "p_" + gen_timestamp + ".json", "w") as f:
             json.dump(json_pattern, f)
 
+        # Generate cbor binaries if requested
+        if args.cbor is True:
+            with open("cbor/" + "p_" + gen_timestamp + ".cbor", "wb") as f:
+                cbor.dump(json_pattern, f)
+
+        # Generate only numpy/gif files
         if args.jsonOnly is False:
-            with open("json/" + "p_" + str(n + 1) + ".json", "r") as f:
+            with open("json/" + "p_" + gen_timestamp + ".json", "r") as f:
                 json_pattern = json.load(f)
 
             iters = [iteration["iteration"] for iteration in json_pattern["pattern"]]
+
+            # Generate a numpy grid for gif generation
             grids = [
                 [[[0, 0, 0] for _ in range(0, 4)] for _ in range(0, 6)]
                 for _ in range(0, len(iters))
             ]
 
-            # For numpy
+            # Generate numpy array for numpy output
             np_grid = [
                 [[0 for _ in range(0, 4)] for _ in range(0, 6)]
                 for _ in range(0, len(iters))
             ]
-
 
             for i, iteration in enumerate(iters):
                 for motor_data in iteration:
@@ -385,14 +414,12 @@ if __name__ == "__main__":
                     amp = motor_data["amplitude"]
                     grids[i][row_coord - 1][col_coord - 1] = [amp, amp, amp]
                     np_grid[i][row_coord - 1][col_coord - 1] = amp
-                    
 
             # Export to numpy
             if args.numpy is True:
                 # Add one additional dimension as specified by Gilles
-                np_reshaped = [np_grid]
-                np.save(f"numpy/p_{n+1}", np_reshaped)
+                np.save(f"numpy/p_{gen_timestamp}", [np_grid])
 
             gifutils.save_frames_as_gif(
-                gifutils.frames_from_lists(grids), "gifs", "p_" + str(n + 1)
+                gifutils.frames_from_lists(grids), "gifs", "p_" + gen_timestamp
             )
