@@ -1,8 +1,10 @@
-# patternGenerator.py version 1.1
-# 03/04/2020
+# patternGenerator.py version 1.2
+# 12/04/2020
 
 # Functions to create patterns for phonemes
 # Imports
+from curses import meta
+from importlib.metadata import metadata
 import os
 import sys
 import numpy as np
@@ -14,6 +16,7 @@ import time
 import parser
 import cbor2 as cbor
 import scipy.signal
+import pandas as pd
 
 def process_amplitude_list(
     amplitude_list, coord_list, pho_freq, path_like, static, total_pattern_time
@@ -70,10 +73,10 @@ def process_amplitude_list(
         motors = []
         # Append all the motors
         j = 0
-        for i in range(len(coord_list)):
+        for i in range(len(amplitude_list)):
             motors.append(
                 {
-                    "coord": coord_list[i],
+                    "coord": coord_list[j],
                     "amplitude": amplitude_list[i],
                     "frequency": pho_freq,
                 }
@@ -83,12 +86,19 @@ def process_amplitude_list(
             for active_motor in motors:
                 iteration["iteration"].append(active_motor)
             data.append(iteration)
+
+            j += 1
+            if j == coord_no - 1:
+                j = 0
+
     # dynamic not path-like
     else:
-        for _ in range(len(coord_list)):
+        for _ in range(len(amplitude_list)):
             iteration = {"iteration": [], "time": pattern_time}
+
             # Choose k random motors that are active in an iteration
             active_motors = random.choices(motors, k=random.randint(1, len(motors)))
+            
             for active_motor in active_motors:
                 iteration["iteration"].append(active_motor)
             data.append(iteration)
@@ -361,6 +371,14 @@ if __name__ == "__main__":
         "isStridden": args.stridden,
     }
 
+    pattern_type = ""
+    if args.static is True:
+        pattern_type = "static"
+    elif args.pathLike is True:
+        pattern_type = "path-like-stridden" if args.stridden is True else "path-like"
+    else:  
+        pattern_type = "dynamic"
+
     # If no json/ directory is found, create it
     # Same for numpy/ and cbor/
     if not os.path.exists("json"):
@@ -373,9 +391,19 @@ if __name__ == "__main__":
     if args.cbor is True and os.path.exists("cbor") is False:
         os.mkdir("cbor")
 
+    if os.path.exists("metadata.csv") is False:
+        metadata_df = pd.DataFrame(columns=["pattern_id", "pattern_type", "wavetype"])
+        metadata_df.set_index("pattern_id", inplace=True)
+    else:
+        metadata_df = pd.read_csv("metadata.csv")
+
+    metadata = []
     # Generate n patterns
     for n in range(args.n):
         gen_timestamp = str(time.time()).replace(".", "")
+
+        pattern_meta = {"pattern_id": f"p_{gen_timestamp}", "pattern_type": pattern_type, "wavetype": wavetype}
+        metadata.append(pattern_meta)
         all_waves = generate_pattern(pattern_conf)
 
         # Write to json file
@@ -423,3 +451,6 @@ if __name__ == "__main__":
             gifutils.save_frames_as_gif(
                 gifutils.frames_from_lists(grids), "gifs", "p_" + gen_timestamp
             )
+
+    metadata_df = metadata_df.append(pd.DataFrame(metadata))
+    metadata_df.to_csv("metadata.csv", index=False)
