@@ -10,7 +10,7 @@ ckpt.zip
 *.json
 *.npy
 *.zip
-
+*.csv
 # universal json binary
 *.ubj
 
