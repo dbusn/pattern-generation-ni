@@ -7,20 +7,21 @@ Make sure that all the packages listed in `requirements.txt` are installed. To d
 The `pattern-gen.ipynb` notebook contains code to run Simulated Annealing and get the best n patterns from a set.
 
 ### Pattern generation
-Proceed to dynamicGeneration directory and run ```python dynamicGenerator.py -h``` to learn how to generate dynamic patterns.
+Proceed to patternGeneration directory and run ```python patternGenerator.py -h``` to learn how to generate dynamic patterns.
 
 List of parameters:
 |Param        |Type   	|Description
 |---        	|---	    |---
-|n       	    |int      |Number of patterns to generate; required
-|pathLike   	|None  	  |Generate path-like patterns
+|n       	    |int        |Number of patterns to generate; required
+|pathLike   	|None  	    |Generate path-like patterns
 |static     	|None    	|Generate static patterns
 |stridden   	|None   	|Generate stridden path-like patterns
 |hanning     	|None   	|Generate patterns with hann function modulation
 |block      	|None   	|Generate patterns with block modulation
 |sawtooth   	|None   	|Generate patterns with sawtooth modulation
 |numpy      	|None   	|Export patterns to a numpy array (default=False)
-|jsonOnly   	|None     |Generate only json files
+|jsonOnly   	|None       |Generate only json files
+|cbor           |None       |Generate optional cbor binaries
 
 ### Conversion to GIF
 Patterns created by patternGenerator are automatically converted to gif files. If you want to keep only the json files, run dynamicGenerator with `--jsonOnly` flag
