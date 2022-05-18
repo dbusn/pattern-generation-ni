@@ -3,7 +3,7 @@
 
 # Functions to create patterns for phonemes
 # Imports
-from curses import meta
+from parseArguments import init_argsparser
 from importlib.metadata import metadata
 import os
 import sys
@@ -13,7 +13,6 @@ import json
 import random
 import config
 import time
-import parser
 import cbor2 as cbor
 import scipy.signal
 import pandas as pd
@@ -329,7 +328,7 @@ def generate_pattern(pattern_conf: dict) -> list:
 
 
 if __name__ == "__main__":
-    arg_parser = parser.init_argsparser()
+    arg_parser = init_argsparser()
     args = arg_parser.parse_args()
 
     # Checks for mutually exclusive arguments
