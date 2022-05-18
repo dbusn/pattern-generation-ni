@@ -1,5 +1,5 @@
-# patternGenerator.py version 1.2
-# 12/04/2020
+# patternGenerator.py version 1.3
+# 18/05/2022
 
 # Functions to create patterns for phonemes
 # Imports
