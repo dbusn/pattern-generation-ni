@@ -1,5 +1,5 @@
-# patternGenerator.py version 1.3
-# 18/05/2022
+# patternGenerator.py version 1.4
+# 12/06/2022
 
 # Functions to create patterns for phonemes
 # Imports
@@ -53,7 +53,7 @@ def process_amplitude_list(
     if path_like is True:
         # For each amplitude in the amplitude list
         j = 0
-        for i in range(len(amplitude_list)):
+        for i in range(len(coord_list)):
             iteration = {"iteration": [], "time": pattern_time}
             motor = {
                 "coord": coord_list[j],
@@ -72,7 +72,7 @@ def process_amplitude_list(
         motors = []
         # Append all the motors
         j = 0
-        for i in range(len(amplitude_list)):
+        for i in range(len(coord_list)):
             motors.append(
                 {
                     "coord": coord_list[j],
@@ -92,7 +92,7 @@ def process_amplitude_list(
 
     # dynamic not path-like
     else:
-        for _ in range(len(amplitude_list)):
+        for _ in range(len(coord_list)):
             iteration = {"iteration": [], "time": pattern_time}
 
             # Choose k random motors that are active in an iteration
